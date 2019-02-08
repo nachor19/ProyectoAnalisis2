@@ -1,0 +1,65 @@
+Como instalar y usar git (para github):
+
+1. Descarguen git de aca e instalenlo:
+
+https://git-scm.com/download/win
+
+
+next -> next -> seleccionen (sublime puede ser uno o notepad++) -> next -> next -> next -> next -> install
+
+2. Cuando se termina de instalar busquen 'git bash' en los programas que se instalaron y lo corren 
+
+3. Cambian de directorio a donde van a tener guardado el proyecto en sus compus. lo pueden copiar del explorador de archivos
+pero tienen que cambiarle los slash asi \ por los asi /, en lugar de C:\Users\ignac\Desktop\Analisis2 seria 
+C:/Users/ignac/Desktop/Analisis2
+
+entonces escriben en git bash:
+
+'cd C:/Users/ignac/Desktop/Analisis2' < sin comillas
+
+No le creen un directorio ya que cuando lo descarguen luego les va a crear el directorio automaticamente
+
+4. Para confirmar que se cambio bien pueden escribir 'pwd' (print working directory) y deberia de aparecer la ruta
+(o sea C:/Users/ignac/Desktop/Analisis2)
+
+5. Descargan el repositorio de github, entonces ponen en git bash:
+
+'git clone https://github.com/nachor19/ProyectoAnalisis2'
+
+y sale algo asi: 
+
+ignac@DESKTOP-ROJA435 MINGW64 ~/Desktop/Analisis2
+$ git clone https://github.com/nachor19/ProyectoAnalisis2.git
+Cloning into 'ProyectoAnalisis2'...
+
+
+6. Se meten a la carpeta 'ProyectoAnalisis2' que se creo:
+
+'cd ProyectoAnalisis2'
+
+-------------------------------------------------------------------------------
+Ya ahi tienen todos los archivos que estan en github. Si van a subir un nuevo archivo lo crean dentro de la carpeta, hacen lo que quieren
+y luego para subirlo se van a la carpeta dentro de git bash 'cd C:/Users/ignac/Desktop/Analisis2',
+se fijan en los cambios que se han hecho:
+
+
+'git status' <<< Muestra los cambios
+
+agregan los cambios:
+
+'git add .' <<< agregar
+C:/Users/ignac/Desktop/Analisis2
+
+confirman que quieren realizar cambios y le meten un detalle de los cambios realizados:
+
+'git commit -m "mensaje de lo que hizo"'
+
+y los agregan:
+
+'git push' 
+
+Si alguien hace cambios, para que ustedes los puedan ver tienen que hacer un 'git pull' para que se descarguen todos los cambios y todos estemos con lo mismo
+
+Y ya.
+
+*********** Ocupan que yo los agregue a los contribuyentes del proyecto para poder subir cambios entonces creense una cuenta en github y me pasan el user. 
