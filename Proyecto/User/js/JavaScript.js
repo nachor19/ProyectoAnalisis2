@@ -45,7 +45,7 @@ function guardarCliente(llave){
             }, success: function(respuesta){
                 if(respuesta == "Guardado"){
                     $("#registrarseModal").modal("toggle");
-                    //window.location.href = 'indexLogin.php';
+                    window.location.href = '../php/ClienteLogin.php';
                 }
                 else{
                     $("#resultados").addClass("alert alert-danger");
@@ -171,7 +171,7 @@ function iniciarSesion(llave){
                 else{
                     $("#iniciarSesionModal").modal("toggle");
 
-                    //window.location.href = 'indexLogin.php';
+                    window.location.href = '../php/ClienteLogin.php';
                 }
             }
         });
@@ -217,4 +217,129 @@ function validarFormSesion(){
         return true;
     }
 }
+// funcoon que se encarga de cerrar la sesion
+function cerrarSesion(llave){
+    $.ajax({
+        url: '../php/manejoCliente.php',
+        method: 'POST',
+        dataType: 'text', 
+        data: {
+            llave: llave
+        }, success: function(respuesta){
+            if(respuesta == "Cerrada"){
+                window.location.href = '../html/index.html';
+            }
+            else{
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+        }
+    });
+}
+function cambiarPwd(llave){
+    var pwd = $("#pwd");
 
+    if(pwd.val().length <= 0){
+        $("#errorPwd").addClass("alert alert-danger");
+        $("#errorPwd").html("Por favor introduzca una contraseña");
+        $("#errorPwd").delay(5000).fadeOut(function(){
+            $(this).removeClass("alert alert-danger");
+            $(this).html("");
+            $(this).css("display", "");
+        });
+        return;
+    }
+    else if(pwd.val().length <=7 ){
+        $("#errorPwd").addClass("alert alert-danger");
+        $("#errorPwd").html("Su nueva contraseña debe de tener más de 7 digitos");
+        $("#errorPwd").delay(5000).fadeOut(function(){
+            $(this).removeClass("alert alert-danger");
+            $(this).html("");
+            $(this).css("display", "");
+        });
+        return;
+    }
+    else{
+        $.ajax({
+            url: '../php/manejoCliente.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                pwd: pwd.val()
+            }, success: function(respuesta){
+                if(respuesta == "Cambiado"){
+                    $("#pwd").val("");
+                    $("#resultado").addClass("alert alert-success");
+                    $("#resultado").html("La información fue editada con éxito <i class='fa fa-check-circle'></i>");
+                    $("#resultado").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-success");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+                else{
+                    $("#pwd").val("");
+                    $("#resultado").addClass("alert alert-danger");
+                    $("#resultado").html("Ocurrió un error, por favor intentelo de nuevo. Si vuelve a pasar comuníquese a soporte@pizzahotml.com");
+                    $("#resultado").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}
+function cambiarCorreo(llave){
+    var email = $("#email");
+    
+    if(email.val().length <= 0){
+        $("#errorEmail").addClass("alert alert-danger");
+        $("#errorEmail").html("Por favor introduzca un correo");
+        $("#errorEmail").delay(5000).fadeOut(function(){
+            $(this).removeClass("alert alert-danger");
+            $(this).html("");
+            $(this).css("display", "");
+        });
+        return;
+    }
+    else{
+        $.ajax({
+            url: '../php/manejoCliente.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                email: email.val()
+            }, success: function(respuesta){
+                if(respuesta == "Cambiado"){
+                    $("#email").val("");
+                    $("#resultado").addClass("alert alert-success");
+                    $("#resultado").html("La información fue editada con éxito <i class='fa fa-check-circle'></i>");
+                    $("#resultado").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-success");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+                else{
+                    $("#email").val("");
+                    $("#resultado").addClass("alert alert-danger");
+                    $("#resultado").html("Ocurrió un error, por favor intentelo de nuevo.");
+                    $("#resultado").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}

@@ -36,7 +36,7 @@
                 $datos = mysqli_fetch_array($query);
                 
                 // salvarlos en la sesion
-                $_SESSION['id_usuario'] = $datos['cedula'];
+                $_SESSION['cedula'] = $datos['cedula'];
                 $_SESSION['nombre'] = $datos['nombre'];
 
                 echo "Guardado";
@@ -60,7 +60,7 @@
                     // contraseña correcta, iniciar sesion
                     session_start();
                     // salvarlos en la sesion
-                    $_SESSION['id_usuario'] = $datos['cedula'];
+                    $_SESSION['cedula'] = $datos['cedula'];
                     $_SESSION['nombre'] = $datos['nombre'];
                     
                     echo "Correcto";
@@ -77,4 +77,76 @@
                 return;
             }
         }
+                // si es cambiar de correo
+        if($_POST['llave'] == "cambioCorreo"){
+            session_start();
+            $id_usuario = $_SESSION['cedula'];
+            $email = $_POST['email'];
+
+            if(!mysqli_query($conn, "UPDATE cliente SET emailc = '$email' WHERE cedula = '$id_usuario';")){
+                echo "Error!";
+                return;
+            }
+            else{
+                exit("Cambiado");
+            }
+        }
+
+        // si es cambiar de contraseña
+        if($_POST['llave'] == "cambioPwd"){
+            session_start();
+            $id_usuario = $_SESSION['cedula'];
+            $hashed_pwd = password_hash(trim($_POST['pwd']), PASSWORD_DEFAULT);
+
+            if(!mysqli_query($conn, "UPDATE cliente SET contrasenna = '$hashed_pwd' WHERE cedula = '$id_usuario';")){
+                echo "Error!";
+                return;
+            }
+            else{
+                exit("Cambiado");
+            }
+        }
+        
+                // si es cerrar sesion
+        if($_POST['llave'] == "cerrarSesion"){
+            // inicializar la sesion
+            session_start();
+            // eliminar los datos de sesion en servidor
+            $_SESSION = array();
+            // destruir la sesion y revisar por errores
+            if(session_destroy()){
+                echo "Cerrada";
+                return;
+            }
+            else{
+                echo "Ocurrió un error, por favor inténtelo de nuevo.";
+                return;
+            }
+        }
+                // si es eliminar cliente
+        if($_POST['llave'] == "eliminarCuenta"){
+            // inicializar la sesion
+            session_start();
+            $id_usuario = $_SESSION['cedula'];
+
+            // eliminar los datos de sesion en servidor
+            $_SESSION = array();
+            // destruir la sesion y revisar por errores
+            if(session_destroy()){
+                // eliminar todas las compras de este cliente            
+                /*if(!mysqli_query($conn, "DELETE FROM citas WHERE cedula = '$id_usuario';")){
+                    echo "Error!";
+                    return;
+               */ }
+                // eliminar al cliente
+                if(!mysqli_query($conn, "DELETE FROM cliente WHERE cedula = '$id_usuario';")){
+                    echo "Error!";
+                    return;
+                }
+            }
+            else{
+                echo "Error!";
+                return;
+            }
+            $conn->close();
 ?>
