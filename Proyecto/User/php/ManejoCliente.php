@@ -17,9 +17,13 @@
 
             // verificar si ese correo aun no exite
             $sql = mysqli_query($conn, "SELECT * FROM cliente WHERE emailc = '$email';");
+            $sql2 = mysqli_query($conn, "SELECT * FROM cliente WHERE cedula = '$cedula';");
 
             if (mysqli_num_rows($sql) > 0) {
                 echo "El correo ingresado ya ha sido registrado.";
+                return;
+            }else if(mysqli_num_rows($sql2) > 0){
+                echo "La cedula ingresada ya ha sido registrada";
                 return;
             }
             else{
@@ -40,9 +44,10 @@
                 $_SESSION['nombre'] = $datos['nombre'];
 
                 echo "Guardado";
+                }
             }
-        }
-    }
+
+
             //si es iniciar sesion
             if($_POST['llave'] == "iniciarSesion"){
             $email = $_POST['email'];
@@ -148,5 +153,6 @@
                 echo "Error!";
                 return;
             }
+        }
             $conn->close();
 ?>

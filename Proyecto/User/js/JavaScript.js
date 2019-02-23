@@ -129,7 +129,7 @@ function validarFormRegistro(){
     else if(pwd.length <= 7){
         $("#pwd").css('border', '1px solid red');
         $("#pwdErr").addClass("alert alert-danger");
-        $("#pwdErr").html("Su contraseña debe tener más de 7 caracteres");
+        $("#pwdErr").html("Su contraseña debe tener más de 8 caracteres");
         check = false;
     }
     else{
