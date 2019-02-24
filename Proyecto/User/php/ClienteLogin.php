@@ -150,9 +150,9 @@
                    			<label for="horario">Horario: </label>
                   		  	<select class="form-control" id="horario" name="horario" required>
                       	  		<?php
-	                            	$datos = mysqli_query($conn, "SELECT hora FROM horario;");
+	                            	$datos = mysqli_query($conn, "SELECT id_horario FROM horario;");
 	                                while($fila = mysqli_fetch_array($datos)){
-	                               		echo "<option>" . $fila['hora']. "</option>";
+	                               		echo "<option>" . $fila['id_horario']. "</option>";
                            			}
                     	    	?>
                   		  	</select>
@@ -163,7 +163,7 @@
                       	  		<?php
 	                            	$datos = mysqli_query($conn, "SELECT nombreb FROM barbero;");
 	                                while($fila = mysqli_fetch_array($datos)){
-	                               		echo "<option>" . $fila['nombre']. "</option>";
+	                               		echo "<option>" . $fila['nombreb']. "</option>";
                            			}
                     	    	?>
                   		  	</select>
