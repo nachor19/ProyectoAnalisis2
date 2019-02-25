@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2019 a las 00:09:54
+-- Tiempo de generación: 25-02-2019 a las 05:01:03
 -- Versión del servidor: 10.1.34-MariaDB
 -- Versión de PHP: 7.2.7
 
@@ -21,6 +21,16 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `barberia`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (`ID_CLIENTE` INT)  SELECT NOMBREB, ID_HORARIO, NOMBRESERVICIO, PRECIO 
+FROM BARBERO B, CITA C, servicio s 
+WHERE C.ID_BARBERO = B.ID_BARBERO AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = ID_CLIENTE$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -44,17 +54,6 @@ INSERT INTO `barbero` (`ID_BARBERO`, `NOMBREB`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categoriaservicio`
---
-
-CREATE TABLE `categoriaservicio` (
-  `ID_CATEGORIASERVICIO` int(11) NOT NULL,
-  `NOMBRECAT` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `cita`
 --
 
@@ -65,8 +64,21 @@ CREATE TABLE `cita` (
   `CEDULA` int(11) NOT NULL,
   `FECHA` date NOT NULL,
   `DESCRIPCION` varchar(100) DEFAULT NULL,
-  `ESTADO` varchar(100) DEFAULT NULL
+  `ESTADO` varchar(100) DEFAULT NULL,
+  `ID_SERVICIO` int(11) DEFAULT NULL,
+  `PRECIO` decimal(5,0) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `cita`
+--
+
+INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `DESCRIPCION`, `ESTADO`, `ID_SERVICIO`, `PRECIO`) VALUES
+(9, 1, '09:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
+(10, 2, '15:00:00', 117090968, '0000-00-00', NULL, NULL, 7, '12000'),
+(19, 2, '09:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
+(23, 1, '13:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
+(24, 2, '14:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000');
 
 -- --------------------------------------------------------
 
@@ -129,10 +141,20 @@ INSERT INTO `horario` (`ID_HORARIO`) VALUES
 
 CREATE TABLE `servicio` (
   `ID_SERVICIO` int(11) NOT NULL,
-  `PRECIOSERVICIO` decimal(5,2) DEFAULT NULL,
-  `DESCRIPCIONS` varchar(100) DEFAULT NULL,
-  `ID_CATEGORIASERVICIO` int(11) DEFAULT NULL
+  `TIEMPO_REQUERIDO` time DEFAULT NULL,
+  `NOMBRESERVICIO` varchar(100) DEFAULT NULL,
+  `PRECIOSERVICIO` decimal(5,0) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `servicio`
+--
+
+INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PRECIOSERVICIO`) VALUES
+(5, '01:00:00', 'CORTE CABELLO', '3000'),
+(6, '01:00:00', 'CORTE DE CABELLO Y BARBA', '6000'),
+(7, '02:00:00', 'ALISSETTE', '12000'),
+(8, '01:00:00', 'TEÑIDO DE CABELLO', '10000');
 
 --
 -- Índices para tablas volcadas
@@ -145,19 +167,14 @@ ALTER TABLE `barbero`
   ADD PRIMARY KEY (`ID_BARBERO`);
 
 --
--- Indices de la tabla `categoriaservicio`
---
-ALTER TABLE `categoriaservicio`
-  ADD PRIMARY KEY (`ID_CATEGORIASERVICIO`);
-
---
 -- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`ID_CITA`),
   ADD KEY `CEDULA` (`CEDULA`),
   ADD KEY `ID_BARBERO` (`ID_BARBERO`),
-  ADD KEY `ID_HORARIO` (`ID_HORARIO`);
+  ADD KEY `ID_HORARIO` (`ID_HORARIO`),
+  ADD KEY `ID_SERVICIO` (`ID_SERVICIO`);
 
 --
 -- Indices de la tabla `cliente`
@@ -175,8 +192,7 @@ ALTER TABLE `horario`
 -- Indices de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  ADD PRIMARY KEY (`ID_SERVICIO`),
-  ADD KEY `ID_CATEGORIASERVICIO` (`ID_CATEGORIASERVICIO`);
+  ADD PRIMARY KEY (`ID_SERVICIO`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -189,22 +205,16 @@ ALTER TABLE `barbero`
   MODIFY `ID_BARBERO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `categoriaservicio`
---
-ALTER TABLE `categoriaservicio`
-  MODIFY `ID_CATEGORIASERVICIO` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
-  MODIFY `ID_SERVICIO` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_SERVICIO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
@@ -216,13 +226,8 @@ ALTER TABLE `servicio`
 ALTER TABLE `cita`
   ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`CEDULA`) REFERENCES `cliente` (`CEDULA`),
   ADD CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`ID_BARBERO`) REFERENCES `barbero` (`ID_BARBERO`),
-  ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`ID_HORARIO`) REFERENCES `horario` (`ID_HORARIO`);
-
---
--- Filtros para la tabla `servicio`
---
-ALTER TABLE `servicio`
-  ADD CONSTRAINT `servicio_ibfk_1` FOREIGN KEY (`ID_CATEGORIASERVICIO`) REFERENCES `categoriaservicio` (`ID_CATEGORIASERVICIO`);
+  ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`ID_HORARIO`) REFERENCES `horario` (`ID_HORARIO`),
+  ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`ID_SERVICIO`) REFERENCES `servicio` (`ID_SERVICIO`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
