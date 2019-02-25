@@ -139,10 +139,10 @@
             // destruir la sesion y revisar por errores
             if(session_destroy()){
                 // eliminar todas las compras de este cliente            
-                /*if(!mysqli_query($conn, "DELETE FROM citas WHERE cedula = '$id_usuario';")){
+                if(!mysqli_query($conn, "DELETE FROM cita WHERE cedula = '$id_usuario';")){
                     echo "Error!";
                     return;
-               */ }
+                }
                 // eliminar al cliente
                 if(!mysqli_query($conn, "DELETE FROM cliente WHERE cedula = '$id_usuario';")){
                     echo "Error!";

@@ -85,16 +85,18 @@
 						</div>
 						<div class="col-xs-4 col-sm-4">
 							<button type="submit" class="btn btn-outline-success pull-right" id="sacarCita" data-toggle="modal" data-target="#sacarCitaModal">Sacar cita</button>
+							<button type="submit" class="btn btn-outline-success pull-right" onclick="cargarTabla()" id="cargartabla" >cargar Tabla</button>
 						</div>
 					</div>
 				</div>				
 				<div>
 					<table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_citas">
 						<thead>
-							<th>Cita #</th>
-							<th>Fecha y hora de cita</th>
+							<th>Fecha</th>
+							<th>Hora cita</th>
 							<th>Barbero</th>
 							<th>Servicio</th>
+							<th>Precio</th>
 						</thead>
 						<tbody>
 						</tbody>
@@ -172,9 +174,9 @@
                    			<label for="servicio">Servicio: </label>
                   		  	<select class="form-control" id="servicio" name="servicio" required>
                       	  		<?php
-	                            	$datos = mysqli_query($conn, "SELECT descipcion FROM servicio;");
+	                            	$datos = mysqli_query($conn, "SELECT nombreservicio FROM servicio;");
 	                                while($fila = mysqli_fetch_array($datos)){
-	                               		echo "<option>" . $fila['descipcion']. "</option>";
+	                               		echo "<option>" . $fila['nombreservicio']. "</option>";
                            			}
                     	    	?>
                   		  	</select>

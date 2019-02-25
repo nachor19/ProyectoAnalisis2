@@ -343,3 +343,61 @@ function cambiarCorreo(llave){
         });
     }
 }
+//PARA CARGAR TABLA
+var cargarTabla = function(){
+    var tabla = $("#tabla_citas").DataTable({
+        responsive: true,
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejoCitas.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTabla'
+            }
+        },
+        "columns": [
+            {"data":"fecha"},
+            {"data":"hora_cita"},
+            {"data":"barbero"},
+            {"data":"servicio"},
+            {"data":"precio"}
+        ]
+    });
+}
+
+// funcion para SACAR CITA
+function sacarCita(llave){
+    var barbero = $("#barbero");
+    var servicio = $("#servicio");
+    var horario = $("#horario");
+    
+    $.ajax({
+        url: '../php/manejoCitas.php',
+        method: 'POST',
+        dataType: 'text', 
+        data: {
+            llave: llave,
+            barbero: barbero.val(),
+            servicio: servicio.val(),
+            horario: horario.val(),
+        }, success: function(respuesta){
+            if(respuesta == "Guardado"){
+                cargarTabla();
+                $("#sacarCitaModal").modal("toggle");
+                $("#modalSuccess").modal('show');
+            }
+            else{
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+        }
+    });
+}  
