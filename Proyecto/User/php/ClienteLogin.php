@@ -47,7 +47,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
 
-	<body>
+	<body onload="cargarTabla()">
 
 		<!-- Navbar de la pagina -->
 		<div id="navbar">
@@ -85,7 +85,6 @@
 						</div>
 						<div class="col-xs-4 col-sm-4">
 							<button type="submit" class="btn btn-outline-success pull-right" id="sacarCita" data-toggle="modal" data-target="#sacarCitaModal">Sacar cita</button>
-							<button type="submit" class="btn btn-outline-success pull-right" onclick="cargarTabla()" id="cargartabla" >cargar Tabla</button>
 						</div>
 					</div>
 				</div>				

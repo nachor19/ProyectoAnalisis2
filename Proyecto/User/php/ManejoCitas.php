@@ -1,7 +1,7 @@
 <?php
 
     require_once 'config_bd.php';
-    session_start();
+            session_start();
 
     if(isset($_POST['llave'])){
 
@@ -16,7 +16,7 @@
 			$fecha = date('j-m-Y');
 			if($query && $query->num_rows > 0){
 				while($data = mysqli_fetch_assoc($query)){
-                    $sub_array["fecha"] = $fecha;
+                    $sub_array["fecha"] = $data['FECHA'];
                     $sub_array['hora_cita'] = $data['ID_HORARIO'];
                     //$sub_array['barbero'] = $data['BARBERON'];
                     $sub_array['barbero'] = $data['ID_BARBERO'];
@@ -34,11 +34,11 @@
             }
         }
 
+
         if($_POST['llave'] == "sacarCita"){
             $barbero = $_POST['barbero'];
             $servicio = $_POST['servicio'];
-            $horario = $_POST['horario'];
-            
+            $horario = $_POST['horario'];           
             // obtener barbero
             $query = mysqli_query($conn, "SELECT * FROM BARBERO;");
             while($fila = mysqli_fetch_array($query)){
@@ -47,8 +47,13 @@
                     break;
                 }
             }
-
-
+            $query = mysqli_query($conn, "SELECT * FROM HORARIO;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['ID_HORARIO'] == $horario){
+                    $id_horario = $fila['ID_HORARIO'];
+                    break;
+                }
+            }
             // obtener servicio
             $query = mysqli_query($conn, "SELECT * FROM SERVICIO;");
             while($fila = mysqli_fetch_array($query)){
@@ -58,28 +63,26 @@
                     break;
                 }
             }
-
             //SACO CLIENTE Y FECHA
+            $fecha = date("Y-m-d");
             $id_usuario = $_SESSION['cedula'];
-            $fechaIns = date('j-m-Y');
-            $query = mysqli_query($conn, "SELECT * FROM cita;");    
+            $query = mysqli_query($conn, "SELECT * FROM CITA WHERE FECHA = '$fecha';");    
             while($fila = mysqli_fetch_array($query)){
-                    if($fila['ID_BARBERO'] == $id_barbero && $fila['ID_HORARIO'] == $horario){
-                        echo "Ya hay cita con ese barbero a esa hora"; 
+                    if($fila['ID_BARBERO'] == $id_barbero && $fila['FECHA'] == $fecha && $fila['ID_HORARIO'] == $id_horario){
+                        echo "Ya hay cita con este barbero en ese horario"; 
                         break;                
                     }else{
-                                // insertar los datos
-                     $query = mysqli_query($conn, "INSERT INTO cita (ID_BARBERO, ID_HORARIO, ID_SERVICIO, PRECIO, CEDULA, FECHA) 
-                        VALUES ('$id_barbero', '$horario', '$id_servicio', '$precio', '$id_usuario', $fechaIns);");
-
+                   // insertar los datos
+                    $query = mysqli_query($conn, "INSERT INTO CITA (ID_BARBERO, ID_HORARIO, ID_SERVICIO, PRECIO, CEDULA, FECHA) VALUES ('$id_barbero', '$id_horario', '$id_servicio', '$precio', '$id_usuario', NOW());");
                         echo "Guardado";
+                        //echo $fila['ID_BARBERO'] ." " . $id_barbero ." ". $fila['FECHA'] . " " . $fecha;
                         break;
                     }
             }
         }
 
-    }
+    }                           
+     $conn->close();
 
-    $conn->close();
 
 ?>

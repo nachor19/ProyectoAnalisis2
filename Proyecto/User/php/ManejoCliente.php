@@ -154,5 +154,7 @@
                 return;
             }
         }
-            $conn->close();
+
+        }
+        $conn->close();
 ?>
