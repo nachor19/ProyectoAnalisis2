@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.2
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2019 a las 05:01:03
--- Versión del servidor: 10.1.34-MariaDB
--- Versión de PHP: 7.2.7
+-- Tiempo de generación: 10-03-2019 a las 21:21:39
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -26,7 +26,7 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (`ID_CLIENTE` INT)  SELECT NOMBREB, ID_HORARIO, NOMBRESERVICIO, PRECIO 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT FECHA, NOMBREB, ID_HORARIO, NOMBRESERVICIO, PRECIO 
 FROM BARBERO B, CITA C, servicio s 
 WHERE C.ID_BARBERO = B.ID_BARBERO AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = ID_CLIENTE$$
 
@@ -74,11 +74,23 @@ CREATE TABLE `cita` (
 --
 
 INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `DESCRIPCION`, `ESTADO`, `ID_SERVICIO`, `PRECIO`) VALUES
-(9, 1, '09:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
-(10, 2, '15:00:00', 117090968, '0000-00-00', NULL, NULL, 7, '12000'),
-(19, 2, '09:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
-(23, 1, '13:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000'),
-(24, 2, '14:00:00', 117090968, '0000-00-00', NULL, NULL, 5, '3000');
+(35, 2, '11:00:00', 117090968, '2019-03-01', NULL, NULL, 5, '3000'),
+(36, 1, '15:00:00', 2147483647, '2019-03-01', NULL, NULL, 5, '3000'),
+(46, 1, '09:00:00', 117090968, '2019-03-01', NULL, NULL, 5, '3000'),
+(69, 2, '13:00:00', 117090968, '2019-03-08', NULL, NULL, 7, '12000'),
+(76, 2, '09:00:00', 117090968, '2019-03-08', NULL, NULL, 5, '3000'),
+(77, 1, '09:00:00', 117090968, '2019-03-08', NULL, NULL, 5, '3000'),
+(82, 2, '13:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
+(83, 2, '11:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
+(84, 2, '16:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
+(85, 2, '14:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
+(86, 2, '09:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
+(87, 1, '09:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
+(88, 2, '15:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
+(89, 1, '09:00:00', 117090968, '2019-09-03', NULL, NULL, 5, '3000'),
+(90, 1, '09:00:00', 117090968, '2019-03-22', NULL, NULL, 5, '3000'),
+(91, 2, '15:00:00', 117090968, '2019-03-24', NULL, NULL, 7, '12000'),
+(92, 2, '13:00:00', 117090968, '2019-03-24', NULL, NULL, 5, '3000');
 
 -- --------------------------------------------------------
 
@@ -101,12 +113,14 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, `EMAILC`, `TELEFONO`, `CONTRASENNA`) VALUES
+(4362646, 'Prueba3', 'Prueba3', 'Prueba3', 'dklfjl@gmail.com', '98327474', '$2y$10$q2JMnI61C.9rW3j470mpne.UwPkDO9IJUI64.PblluZSkYIbIyWme'),
 (12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq'),
-(117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'nachorabbit19@gmail.com', '87992514', '$2y$10$3Q37mu.NTEjMdlwnP46.X.WbwsSS2/p7rgffdW8qgpIeEkUOTu0Mq'),
+(117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i'),
 (117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne'),
 (123456789, 'Sofia', 'Matamoros', 'Viquez', 'mvsofia@hotmail.com', '88326518', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6'),
 (132456789, 'Minor', 'Solano', 'Nuñez', 'minor@gmail.com', '83457846', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK'),
-(347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi');
+(347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi'),
+(2147483647, 'Manfred', 'Martinez', 'Monge', 'manfred@gmail.com', '82143962', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6');
 
 -- --------------------------------------------------------
 
@@ -208,7 +222,7 @@ ALTER TABLE `barbero`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio`

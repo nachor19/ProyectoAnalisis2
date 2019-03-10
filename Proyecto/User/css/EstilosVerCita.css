@@ -5,25 +5,7 @@ body, html{
 	font-family: 'Abel', sans-serif;
 }
 .primer_imagen{
-	background-image: url("../img/background1.jpg");
-    height: 70%;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.segunda_imagen{
-	background-image: url("../img/background2.jpg");
-    height: 70%;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.tercera_imagen{
-	background-image: url("../img/background3.jpg");
+	background-image: url("../img/backgroundC.jpg");
     height: 70%;
     background-attachment: fixed;
     background-position: center;
@@ -56,6 +38,9 @@ p{
 	margin-bottom: 150px;
 }
 
+.select {
+	text-align: center;
+}
 /* hr */
 #separacion {
 	background-color: white;
@@ -69,10 +54,10 @@ hr{
 	margin-top: 3px;
 	margin-bottom: 8px;
 }
-
 .navbar-light .navbar-toggler {
   background-color: white;
-  border-color: grey;
+  border-color: blue;
+  column-rule-color: red;
 }
 
 /* fin hr */
@@ -85,7 +70,7 @@ hr{
 }
 
 #navbar a:hover{
-	color: white;
+	color: #7f7f7f;
 }
 
 .sticky {
@@ -126,51 +111,41 @@ button{
 }
 
 a {
-	color: #8bb6f9;
+	color: blue;
 	text-decoration: none;
 }
 
 a:hover{
-	color: white;
+	color: lightblue;
 	text-decoration: underline;
 }
 
-/* redes sociales */ 
-.fa{
-  color:white;
-  text-decoration: none;
-  padding: 5px;
-  font-size: 1.5em;
+.fullscreen-modal .modal-dialog {
+  margin: 0;
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
 }
-
-.fa-facebook:hover{
-	color: #3B5998;
-	text-decoration: none;
+@media (min-width: 768px) {
+  .fullscreen-modal .modal-dialog {
+    width: 750px;
+  }
 }
-
-.fa-twitter:hover{
-	color: #1DA1F2;
-	text-decoration: none;
+@media (min-width: 992px) {
+  .fullscreen-modal .modal-dialog {
+    width: 970px;
+  }
 }
-
-.fa-google-plus:hover{
-	color: #DB4437;
-	text-decoration: none;
+@media (min-width: 1200px) {
+  .fullscreen-modal .modal-dialog {
+     width: 1170px;
+  }
 }
-
-.fa-pinterest:hover{
-	color: #BD081C;
-	text-decoration: none;
+label{
+	color: black;
 }
-
-.fa-snapchat:hover{
-	color: #FFFC00;
-	text-decoration: none;
-}
-
-.fa-instagram:hover{
-	color: #cd486b;
-	text-decoration: none;
+input{
+	color:black;
 }
 
 /* fin redes sociales */ 

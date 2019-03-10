@@ -1,5 +1,6 @@
 
 $(document).ready(function(){
+    controlarDesplazamiento();
     controlarNavbar();
 });
 
@@ -18,6 +19,21 @@ var controlarNavbar = function(){
         }
     } 
 }
+// funcion que maneja cuando se le da click a un link
+var controlarDesplazamiento = function(){
+    $("a").on('click', function(event) {
+        if (this.hash !== "") {
+            event.preventDefault();
+            var hash = this.hash;
+            $('html, body').animate({
+                scrollTop: $(hash).offset().top
+            }, 1000, function(){
+                window.location.hash = hash;
+            });
+        }
+    });
+}
+
 
 function guardarCliente(llave){
     var cedula = $("#cedula");
@@ -120,6 +136,16 @@ function validarFormRegistro(){
         $("#email").css('border', '');
         $("#emailErr").remove();
     }
+    if (/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/i.test(correo)){
+        $("#email").css('border', '');
+        $("#emailErr").remove();
+    } 
+    else {
+        $("#email").css('border', '1px solid red');
+        $("#emailErr").addClass("alert alert-danger");
+        $("#emailErr").html("Por favor ingrese un correo válido");
+        check = false;
+    }
     if(pwd.length == 0){
         $("#pwd").css('border', '1px solid red');
         $("#pwdErr").addClass("alert alert-danger");
@@ -142,6 +168,23 @@ function validarFormRegistro(){
     }
     else{
         return true;
+    }
+}
+function soloNumeros(e){
+    key = e.keyCode || e.which;
+    teclado = String.fromCharCode(key);
+    //numeros que se van a permitir
+    numeros = "0123456789";
+    //teclas especiales que se pueden usar
+    especiales = "8-37-38-46";//array 
+    teclado_especial=false;
+    for (var i in especiales[i]) {
+        if(key == especiales[i]){
+            teclado_especial = true;
+        }
+    }
+    if(numeros.indexOf(teclado) == -1 && !teclado_especial){
+        return false;
     }
 }
 // funcion que se encarga de iniciar sesion mediante AJAX
@@ -373,6 +416,7 @@ function sacarCita(llave){
     var barbero = $("#barbero");
     var servicio = $("#servicio");
     var horario = $("#horario");
+    var fecha = $("#fecha");
     
     $.ajax({
         url: '../php/manejoCitas.php',
@@ -383,6 +427,7 @@ function sacarCita(llave){
             barbero: barbero.val(),
             servicio: servicio.val(),
             horario: horario.val(),
+            fecha: fecha.val()
         }, success: function(respuesta){
             if(respuesta == "Guardado"){
                 cargarTabla();
@@ -401,3 +446,47 @@ function sacarCita(llave){
         }
     });
 }  
+// funcion para ver si hay citas disponibles
+function consultarCita(llave){
+    var barbero = $("#barbero");
+    var horario = $("#horario");
+    var fecha = $("#fecha");
+    
+    $.ajax({
+        url: '../php/manejoCitas.php',
+        method: 'POST',
+        dataType: 'text', 
+        data: {
+            llave: llave,
+            barbero: barbero.val(),
+            horario: horario.val(),
+            fecha: fecha.val()
+        }, success: function(respuesta){
+            if(respuesta == "Ya hay cita con este barbero en ese horario"){
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(8000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+            else{
+                $("#resultados").addClass("alert alert-success");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(8000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+        }
+    });
+}
+function volver(){
+    $("#verCitaModal").modal("toggle");
+    window.location.href = '../html/Index.html';
+}
+function verCitas(){
+    window.location.href = '../php/VerCitas.php';
+}

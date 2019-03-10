@@ -180,6 +180,11 @@
                     	    	?>
                   		  	</select>
 						</div>
+						<div class="form-group">
+                   			<label for="fecha">Fecha: </label><br>
+							<input type="date" name="fecha" id="fecha" style="width:250px;height:40px" min="09/03/2019" required>
+							<span class="validity"></span>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-dark" data-dismiss="modal">Cancelar</button>

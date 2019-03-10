@@ -42,12 +42,13 @@
 						<li><a class="nav-link" href="#sacarcita">Reservar cita</a></li>
 						<li><a class="nav-link" href="#nosotros">Nosotros</a></li>
 						<li><a class="nav-link" href="#contacto">Contáctenos</a></li>
+						<li><a class="nav-link" href="#" onclick="verCitas()">Ver Citas</a></li>
 					</ul>
 				</div>
 			</nav> 	
 		</div>
 
-		<!-- ordenar -->
+		<!-- citas -->
 		<div id="sacarcita"></div>
 		<div class="container-fluid">
 			<div class="informacion">
@@ -112,7 +113,7 @@
 					<div class="modal-body">
 						<div class="form-group" id="cedulaDiv">
 							<label for="cedula" class="text-dark">Número de cédula:</label>
-							<input autocomplete="off" type="text" class="form-control" id="cedula" placeholder="Cedula como 123456789" name="cedula" required>
+							<input autocomplete="off" type="text" class="form-control" id="cedula" placeholder="Cedula como 123456789" onkeypress="return soloNumeros(event)" name="cedula" required>
 						</div>
 						<div id="cedulaErr"></div>
 						<div class="form-group" id="nombreDiv">
@@ -131,7 +132,7 @@
 						</div>
 						<div class="form-group" id="telefonoDiv">
 							<label for="telefono" class="text-dark">Telefono:</label>
-							<input autocomplete="off" type="tel" class="form-control" id="telefono" placeholder="Telefono como 1234-5678" name="telefono">
+							<input autocomplete="off" type="tel" class="form-control" id="telefono" onkeypress="return soloNumeros(event)" placeholder="Telefono como 12345678" name="telefono">
 						</div>
 						<div id="telefonoErr"></div>
 						<div class="form-group" id="emailDiv">
