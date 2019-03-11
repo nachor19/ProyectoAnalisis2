@@ -41,7 +41,7 @@
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowreorder/1.2.5/js/dataTables.rowReorder.min.js"></script>
 
 		<!-- nuestros estilos-->
-		<link rel="stylesheet" type="text/css" href="../css/estilosLogin.css">
+		<link rel="stylesheet" type="text/css" href="../css/EstilosLogin.css">
 
 		<!-- font awesome library -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -85,6 +85,7 @@
 						</div>
 						<div class="col-xs-4 col-sm-4">
 							<button type="submit" class="btn btn-outline-success pull-right" id="sacarCita" data-toggle="modal" data-target="#sacarCitaModal">Sacar cita</button>
+							<button type="submit" class="btn btn-outline-primary pull-right producto" id="productos" onclick="openProductos()">Productos</button>
 						</div>
 					</div>
 				</div>				
@@ -211,6 +212,13 @@
 
 		<!-- javascript nuestro -->
 		<script src="../js/JavaScript.js"></script>
+
+		<script>
+			function openProductos() {
+				window.location.replace("verProductos.php");
+				return false;
+			}
+		</script>
 		
 	</body>
 </html>

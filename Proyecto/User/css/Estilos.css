@@ -98,6 +98,10 @@ hr{
 	padding-top: 60px;
 }
 
+.main {
+	z-index: 999;
+}
+
 /* fin navbar */ 
 
 /* botones */ 
