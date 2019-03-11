@@ -20,7 +20,7 @@
       });
     </script>
 </head>
-<body>
+<body onload="setFecha()">
    <div class="modal fade bg-dark text-white" data-keyboard="false" data-backdrop="static" id="verCitaModal" tabindex="-1" role="dialog" aria-labelledby="verCitaModal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -53,7 +53,7 @@
 						</div>
 						<div class="form-group">
                    			<label for="fecha">Fecha: </label><br>
-							<input type="date" name="fecha" id="fecha" min="09-03-2019" required>
+							<input type="date" name="fecha" id="fecha" required>
 							<span class="validity"></span>
 						</div>
 						<div>
