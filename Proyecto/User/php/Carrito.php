@@ -1,163 +1,170 @@
-<?php session_start();
-class Carrito {
-    protected $cart_contents = array();
-    
-    public function __construct(){
-        $this->cart_contents = !empty($_SESSION['cart_contents'])?$_SESSION['cart_contents']:NULL;
-        if ($this->cart_contents === NULL){
-            $this->cart_contents = array('cart_total' => 0, 'total_items' => 0);
+<?php
+    session_start();
+    include('config_bd.php');
+    $status="";
+
+    if (isset($_POST['action']) && $_POST['action']=="remove") {
+        if(!empty($_SESSION["shopping_cart"])) {
+            foreach($_SESSION["shopping_cart"] as $key => $value) {
+                if($_POST["code"] == $key) {
+                    unset($_SESSION["shopping_cart"][$key]);
+                    $status = "<div class='box' style='color:red;'>
+                    Product is removed from your cart!</div>";
+                }
+                if(empty($_SESSION["shopping_cart"])) {
+                    unset($_SESSION["shopping_cart"]);
+                }
+            }		
         }
     }
-    
-    /**
-     * Cart Contents: Returns the entire cart array
-     * @param    bool
-     * @return    array
-     */
-    public function contents(){
-        $cart = array_reverse($this->cart_contents);
-        unset($cart['total_items']);
-        unset($cart['cart_total']);
 
-        return $cart;
-    }
-    
-    /**
-     * Get cart item: Returns a specific cart item details
-     * @param    string    $row_id
-     * @return    array
-     */
-    public function get_item($row_id){
-        return (in_array($row_id, array('total_items', 'cart_total'), TRUE) OR ! isset($this->cart_contents[$row_id]))
-            ? FALSE
-            : $this->cart_contents[$row_id];
-    }
-    
-    /**
-     * Total Items: Returns the total item count
-     * @return    int
-     */
-    public function total_items(){
-        return $this->cart_contents['total_items'];
-    }
-    
-    /**
-     * Cart Total: Returns the total price
-     * @return    int
-     */
-    public function total(){
-        return $this->cart_contents['cart_total'];
-    }
-    
-    /**
-     * Insert items into the cart and save it to the session
-     * @param    array
-     * @return    bool
-     */
-    public function insert($item = array()){
-        if(!is_array($item) OR count($item) === 0){
-            var_dump('here');
-            return FALSE;
-        }else{
-            if(!isset($item['ID_PRODUCTO'], $item['NOMBRE'], $item['PRECIO'], $item['qty'])){
-                var_dump($item);
-                return FALSE;
-            }else{
-                $item['qty'] = (float) $item['qty'];
-                if($item['qty'] == 0){
-                    return FALSE;
-                }
-                $item['PRECIO'] = (float) $item['PRECIO'];
-                $rowid = md5($item['ID_PRODUCTO']);
-                $old_qty = isset($this->cart_contents[$rowid]['qty']) ? (int) $this->cart_contents[$rowid]['qty'] : 0;
-                $item['rowid'] = $rowid;
-                $item['qty'] += $old_qty;
-                $this->cart_contents[$rowid] = $item;
-
-                if($this->save_cart()){
-                    return isset($rowid) ? $rowid : TRUE;
-                }else{
-                    return FALSE;
-                }
-            }
-        }
-    }
-    
-    /**
-     * Update the cart
-     * @param    array
-     * @return    bool
-     */
-    public function update($item = array()){
-        if (!is_array($item) OR count($item) === 0){
-            return FALSE;
-        }else{
-            if (!isset($item['rowid'], $this->cart_contents[$item['rowid']])){
-                return FALSE;
-            }else{
-                if(isset($item['qty'])){
-                    $item['qty'] = (float) $item['qty'];
-                    if ($item['qty'] == 0){
-                        unset($this->cart_contents[$item['rowid']]);
-                        return TRUE;
+    if (isset($_POST['action']) && $_POST['action']=="confirmar") {
+        $sql = "INSERT INTO orden (CLIENTE_ID, PRECIO_TOTAL, CREADO, MODIFICADO, ESTADO)
+            VALUES (". $_SESSION['cedula'].", ".$_SESSION['total_price'].", ".date("Y-m-d")."
+            , ".date("Y-m-d").", ". '1'.")";
+        if (mysqli_query($conn, $sql)) {           
+            $order_id = mysqli_insert_id($conn);            
+            foreach($_SESSION["shopping_cart"] as $key => $value) {
+                $sql_orders = "INSERT INTO orden_producto (ORDEN_ID, PRODUCTO_ID, CANTIDAD)
+                VALUES (". $order_id.", ".$value['code'].", ".$value['quantity'].")";
+                mysqli_query($conn, $sql_orders);
+                if (mysqli_query($conn, $sql)) {
+                    $sql_producto = "SELECT * FROM producto WHERE ID_PRODUCTO =". $value['code']."";
+                    $result = mysqli_query($conn, $sql_producto);
+                    while($row = $result->fetch_assoc()) {
+                        $cantidad = (int)$row['CANTIDAD'] - (int)$value['quantity'];
+                        if (mysqli_num_rows($result) > 0) {
+                            $sql_update = "UPDATE producto SET CANTIDAD=".$cantidad." WHERE ID_PRODUCTO=".$value['code']."";
+                            mysqli_query($conn, $sql_update);
+                        }
                     }
                 }
+
                 
-                $keys = array_intersect(array_keys($this->cart_contents[$item['rowid']]), array_keys($item));
-                if(isset($item['PRECIO'])){
-                    $item['PRECIO'] = (float) $item['PRECIO'];
-                }
-                foreach(array_diff($keys, array('id', 'name')) as $key){
-                    $this->cart_contents[$item['rowid']][$key] = $item[$key];
-                }
-                $this->save_cart();
-                return TRUE;
+                
+                
             }
-        }
-    }
-    
-    /**
-     * Save the cart array to the session
-     * @return    bool
-     */
-    protected function save_cart(){
-        $this->cart_contents['total_items'] = $this->cart_contents['cart_total'] = 0;
-        foreach ($this->cart_contents as $key => $val){
-            if(!is_array($val) OR !isset($val['PRECIO'], $val['qty'])){
-                continue;
-            }
-     
-            $this->cart_contents['cart_total'] += ($val['PRECIO'] * $val['qty']);
-            $this->cart_contents['total_items'] += $val['qty'];
-            $this->cart_contents[$key]['subtotal'] = ($this->cart_contents[$key]['PRECIO'] * $this->cart_contents[$key]['qty']);
         }
         
-        if(count($this->cart_contents) <= 2){
-            unset($_SESSION['cart_contents']);
-            return FALSE;
-        }else{
-            $_SESSION['cart_contents'] = $this->cart_contents;
-            return TRUE;
+    }
+
+    if (isset($_POST['action']) && $_POST['action']=="change") {
+    foreach($_SESSION["shopping_cart"] as &$value){
+        if($value['code'] === $_POST["code"]){
+            $value['quantity'] = $_POST["quantity"];
+            break; 
         }
     }
-    
-    /**
-     * Remove Item: Removes an item from the cart
-     * @param    int
-     * @return    bool
-     */
-     public function remove($row_id){
-        unset($this->cart_contents[$row_id]);
-        $this->save_cart();
-        return TRUE;
-     }
-     
-    /**
-     * Destroy the cart: Empties the cart and destroy the session
-     * @return    void
-     */
-    public function destroy(){
-        $this->cart_contents = array('cart_total' => 0, 'total_items' => 0);
-        unset($_SESSION['cart_contents']);
-    }
+  	
 }
+?>
+
+<html>
+    <head>
+    <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+    <title>Productos</title>
+    <link rel="stylesheet" type="text/css" href="../css/Productos.css">
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"> 
+     
+</head>
+<body>
+    <div class="container">
+        <br>
+
+        <h2>Confirmar Reservas</h2>   
+
+        <?php
+            if(!empty($_SESSION["shopping_cart"])) {
+            $cart_count = count(array_keys($_SESSION["shopping_cart"]));
+        ?>
+            <div class="cart_div pull-left" style="padding: 0px 40px;">
+                <a href="verProductos.php">Regresar <span class="fa fa-arrow-left"></span></a>
+            </div>
+
+            <div class="pull-right">
+                <form method='post' action=''>
+                    <input type='hidden' name='action' value="confirmar" />
+                    <button type="submit" value="confirmar" class="btn btn-outline-success comprar" >Confirmar</button>
+                </form>
+            </div>
+            <br>
+        <?php
+        }
+        ?>
+
+        <div class="cart">
+        <?php
+            if(isset($_SESSION["shopping_cart"])){
+                $total_price = 0;
+        ?>	
+        <br><br>
+        <ul class="responsive-table">
+            <li class="table-header">
+                <div class="col col-1 ui-helper-center">IMAGEN</div>
+                <div class="col col-2 ui-helper-center">NOMBRE</div>
+                <div class="col col-3 ui-helper-center">CANTIDAD</div>
+                <div class="col col-4 ui-helper-center">PRECIO UNITARIO</div>
+                <div class="col col-6 ui-helper-center">TOTAL</div>
+            </li>	
+        <?php		
+            foreach ($_SESSION["shopping_cart"] as $product){
+        ?>
+        <li class="table-row">
+            <div class="col col-1 ui-helper-center"><img class="imagen" src="<?php echo $product['image']?>"></div>
+            <div class="col col-2 ui-helper-center"><?php echo $product['name']?>
+                <form method='post' action=''>
+                    <input type='hidden' name='code' value="<?php echo $product["code"]; ?>" />
+                    <input type='hidden' name='action' value="remove" />
+                    <button type='submit' class="btn btn-outline-danger comprar">Remover</button>
+                </form>
+            </div>         
+            <div class="col col-3 ui-helper-center">
+                <form method='post' action=''>
+                    <input type='hidden' name='code' value="<?php echo $product["code"]; ?>" />
+                    <input type='hidden' name='action' value="change" />
+                    <select  class="form-control" name='quantity' class='quantity' onchange="this.form.submit()">
+                        <option <?php if($product["quantity"]==1) echo "selected";?> value="1">1</option>
+                        <option <?php if($product["quantity"]==2) echo "selected";?> value="2">2</option>
+                        <option <?php if($product["quantity"]==3) echo "selected";?> value="3">3</option>
+                        <option <?php if($product["quantity"]==4) echo "selected";?> value="4">4</option>
+                        <option <?php if($product["quantity"]==5) echo "selected";?> value="5">5</option>
+                    </select>
+                </form>
+            </div>
+            <div class="col col-4 ui-helper-center"><?php echo "₡".$product["price"]; ?></div>
+            <div class="col col-6 ui-helper-center">
+                <?php echo "₡".$product["price"]*$product["quantity"]; ?>
+            </div>
+        </li>
+
+        <?php
+                $total_price += ($product["price"]*$product["quantity"]);
+                $_SESSION['total_price'] = $total_price;
+            }
+        ?>
+        
+        <div  class="pull-right">
+            <strong>TOTAL: <?php echo "₡".$total_price; ?></strong>
+        </div>
+	
+        <?php
+            } else {
+                echo "
+                    <div class='cart_div pull-left' style='padding: 0px 40px;'>
+                        <a href='verProductos.php'>Regresar <span class='fa fa-arrow-left'></span></a>
+                    </div>
+                    <br><br><br>
+                    <div class='card'>
+                        <div class='card-body'>
+                            <h2>No tiene reservas.</h2>
+                        </div>
+                    </div>";
+                }
+            ?>
+    </div>
+</body>
+</html>

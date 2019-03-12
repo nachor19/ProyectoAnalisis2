@@ -2,10 +2,10 @@
 -- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 10-03-2019 a las 21:21:39
--- Versión del servidor: 10.1.38-MariaDB
--- Versión de PHP: 7.3.2
+-- Host: 127.0.0.1
+-- Generation Time: Mar 12, 2019 at 06:37 AM
+-- Server version: 10.1.38-MariaDB
+-- PHP Version: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,12 +19,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `barberia`
+-- Database: `barberia`
 --
 
 DELIMITER $$
 --
--- Procedimientos
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT FECHA, NOMBREB, ID_HORARIO, NOMBRESERVICIO, PRECIO 
 FROM BARBERO B, CITA C, servicio s 
@@ -35,7 +35,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `barbero`
+-- Table structure for table `barbero`
 --
 
 CREATE TABLE `barbero` (
@@ -44,7 +44,7 @@ CREATE TABLE `barbero` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `barbero`
+-- Dumping data for table `barbero`
 --
 
 INSERT INTO `barbero` (`ID_BARBERO`, `NOMBREB`) VALUES
@@ -54,7 +54,7 @@ INSERT INTO `barbero` (`ID_BARBERO`, `NOMBREB`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cita`
+-- Table structure for table `cita`
 --
 
 CREATE TABLE `cita` (
@@ -70,7 +70,7 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `cita`
+-- Dumping data for table `cita`
 --
 
 INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `DESCRIPCION`, `ESTADO`, `ID_SERVICIO`, `PRECIO`) VALUES
@@ -95,7 +95,7 @@ INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `D
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `cliente`
+-- Table structure for table `cliente`
 --
 
 CREATE TABLE `cliente` (
@@ -109,23 +109,25 @@ CREATE TABLE `cliente` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `cliente`
+-- Dumping data for table `cliente`
 --
 
 INSERT INTO `cliente` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, `EMAILC`, `TELEFONO`, `CONTRASENNA`) VALUES
 (4362646, 'Prueba3', 'Prueba3', 'Prueba3', 'dklfjl@gmail.com', '98327474', '$2y$10$q2JMnI61C.9rW3j470mpne.UwPkDO9IJUI64.PblluZSkYIbIyWme'),
 (12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq'),
+(111111119, 'asd', 'asd', 'ad', 'alegonpov@gmail.com', '12345678', '123'),
 (117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i'),
 (117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne'),
 (123456789, 'Sofia', 'Matamoros', 'Viquez', 'mvsofia@hotmail.com', '88326518', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6'),
 (132456789, 'Minor', 'Solano', 'Nuñez', 'minor@gmail.com', '83457846', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK'),
 (347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi'),
+(999999999, 'Ricardo', 'Madrigal', 'Herrera', 'rch@gmail.com', '12341234', '$2y$10$XOepLspqo.V8GRbd9W6Oou0tN0cvp.za3CGsTL5bZJlD4HwPtj/iq'),
 (2147483647, 'Manfred', 'Martinez', 'Monge', 'manfred@gmail.com', '82143962', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `horario`
+-- Table structure for table `horario`
 --
 
 CREATE TABLE `horario` (
@@ -133,7 +135,7 @@ CREATE TABLE `horario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `horario`
+-- Dumping data for table `horario`
 --
 
 INSERT INTO `horario` (`ID_HORARIO`) VALUES
@@ -150,7 +152,63 @@ INSERT INTO `horario` (`ID_HORARIO`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `servicio`
+-- Table structure for table `orden`
+--
+
+CREATE TABLE `orden` (
+  `ORDEN_ID` int(11) NOT NULL,
+  `CLIENTE_ID` int(11) NOT NULL,
+  `PRECIO_TOTAL` decimal(13,2) NOT NULL,
+  `CREADO` datetime NOT NULL,
+  `MODIFICADO` datetime NOT NULL,
+  `ESTADO` enum('1','0') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orden_producto`
+--
+
+CREATE TABLE `orden_producto` (
+  `ID` int(11) NOT NULL,
+  `ORDEN_ID` int(11) NOT NULL,
+  `PRODUCTO_ID` int(11) NOT NULL,
+  `CANTIDAD` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `producto`
+--
+
+CREATE TABLE `producto` (
+  `ID_PRODUCTO` int(11) NOT NULL,
+  `NOMBRE` varchar(40) NOT NULL,
+  `DESCRIPCION` varchar(140) NOT NULL,
+  `PRECIO` decimal(13,2) NOT NULL,
+  `COMENTARIO` varchar(255) NOT NULL,
+  `ESTADO` enum('D','A') NOT NULL,
+  `CANTIDAD` int(11) NOT NULL,
+  `IMAGEN` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `producto`
+--
+
+INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMENTARIO`, `ESTADO`, `CANTIDAD`, `IMAGEN`) VALUES
+(1, 'Bálsamo', 'Bálsamo para barba y bigote', '13000.00', '', 'D', 7, '../img/productos/balsamo.png'),
+(2, 'Kit Charles', 'Prueba', '15000.00', '', 'D', 10, '../img/productos/kit-charles.png'),
+(3, 'Shaving Charles', 'Shaving Charles', '12000.00', '', 'D', 15, '../img/productos/shaving-charles.png'),
+(4, 'Shaving Soap', 'Shaving Soap', '9000.00', '', 'D', 9, '../img/productos/shaving-soap.png'),
+(5, 'Aceite Bay Rum Beard', 'Grande', '14000.00', '', 'D', 10, '../img/productos/suavecito-bay-rum-beard-oil_large.png');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `servicio`
 --
 
 CREATE TABLE `servicio` (
@@ -161,7 +219,7 @@ CREATE TABLE `servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `servicio`
+-- Dumping data for table `servicio`
 --
 
 INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PRECIOSERVICIO`) VALUES
@@ -171,17 +229,17 @@ INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PR
 (8, '01:00:00', 'TEÑIDO DE CABELLO', '10000');
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `barbero`
+-- Indexes for table `barbero`
 --
 ALTER TABLE `barbero`
   ADD PRIMARY KEY (`ID_BARBERO`);
 
 --
--- Indices de la tabla `cita`
+-- Indexes for table `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`ID_CITA`),
@@ -191,57 +249,109 @@ ALTER TABLE `cita`
   ADD KEY `ID_SERVICIO` (`ID_SERVICIO`);
 
 --
--- Indices de la tabla `cliente`
+-- Indexes for table `cliente`
 --
 ALTER TABLE `cliente`
   ADD PRIMARY KEY (`CEDULA`);
 
 --
--- Indices de la tabla `horario`
+-- Indexes for table `horario`
 --
 ALTER TABLE `horario`
   ADD PRIMARY KEY (`ID_HORARIO`);
 
 --
--- Indices de la tabla `servicio`
+-- Indexes for table `orden`
+--
+ALTER TABLE `orden`
+  ADD PRIMARY KEY (`ORDEN_ID`),
+  ADD KEY `cliente_id_fk` (`CLIENTE_ID`);
+
+--
+-- Indexes for table `orden_producto`
+--
+ALTER TABLE `orden_producto`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `orden_id_fk` (`ORDEN_ID`),
+  ADD KEY `producto_id_fk` (`PRODUCTO_ID`);
+
+--
+-- Indexes for table `producto`
+--
+ALTER TABLE `producto`
+  ADD PRIMARY KEY (`ID_PRODUCTO`);
+
+--
+-- Indexes for table `servicio`
 --
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`ID_SERVICIO`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `barbero`
+-- AUTO_INCREMENT for table `barbero`
 --
 ALTER TABLE `barbero`
   MODIFY `ID_BARBERO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `cita`
+-- AUTO_INCREMENT for table `cita`
 --
 ALTER TABLE `cita`
   MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
--- AUTO_INCREMENT de la tabla `servicio`
+-- AUTO_INCREMENT for table `orden`
+--
+ALTER TABLE `orden`
+  MODIFY `ORDEN_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `orden_producto`
+--
+ALTER TABLE `orden_producto`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `producto`
+--
+ALTER TABLE `producto`
+  MODIFY `ID_PRODUCTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `servicio`
 --
 ALTER TABLE `servicio`
   MODIFY `ID_SERVICIO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `cita`
+-- Constraints for table `cita`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`CEDULA`) REFERENCES `cliente` (`CEDULA`),
   ADD CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`ID_BARBERO`) REFERENCES `barbero` (`ID_BARBERO`),
   ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`ID_HORARIO`) REFERENCES `horario` (`ID_HORARIO`),
   ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`ID_SERVICIO`) REFERENCES `servicio` (`ID_SERVICIO`);
+
+--
+-- Constraints for table `orden`
+--
+ALTER TABLE `orden`
+  ADD CONSTRAINT `cliente_id_fk` FOREIGN KEY (`CLIENTE_ID`) REFERENCES `cliente` (`CEDULA`);
+
+--
+-- Constraints for table `orden_producto`
+--
+ALTER TABLE `orden_producto`
+  ADD CONSTRAINT `orden_id_fk` FOREIGN KEY (`ORDEN_ID`) REFERENCES `orden` (`ORDEN_ID`),
+  ADD CONSTRAINT `producto_id_fk` FOREIGN KEY (`PRODUCTO_ID`) REFERENCES `producto` (`ID_PRODUCTO`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

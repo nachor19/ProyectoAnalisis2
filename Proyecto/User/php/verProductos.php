@@ -1,18 +1,48 @@
 <?php
-    $sesion = false;
-    require_once 'config_bd.php';
-
-    $query = "SELECT * FROM producto"; 
-    $result = $conn->query($query);
-
-    // iniciar la sesion
     session_start();
-    if(isset($_SESSION['cedula']) || empty($_SESSION['cedula'])){
-       $sesion = true;
+    include('config_bd.php');
+    $status="";
+    if (isset($_POST['code']) && $_POST['code']!=""){
+        $code = $_POST['code'];
+        $result = mysqli_query($conn,"SELECT * FROM `producto` WHERE `ID_PRODUCTO`='$code'");
+        $row = mysqli_fetch_assoc($result);
+        $name = $row['NOMBRE'];
+        $code = $row['ID_PRODUCTO'];
+        $price = $row['PRECIO'];
+        $image = $row['IMAGEN'];
+
+    $cartArray = array(
+        $code=>array(
+        'name'=>$name,
+        'code'=>$code,
+        'price'=>$price,
+        'quantity'=>1,
+        'image'=>$image)
+    );
+
+    if(empty($_SESSION["shopping_cart"])) {
+        $_SESSION["shopping_cart"] = $cartArray;
+        $status = " <div class='alert alert-success' role='alert'>
+            
+        El producto ha sido reservado
+      </div>";
+    }else{
+        $array_keys = array_keys($_SESSION["shopping_cart"]);
+        if(in_array($code,$array_keys)) {
+            $status = " <div class='alert alert-info' role='alert'>
+            
+            El producto ya ha sido reservado
+          </div>";	
+        } else {
+        $_SESSION["shopping_cart"] = array_merge($_SESSION["shopping_cart"],$cartArray);
+        $status = " <div class='alert alert-success' role='alert'>
+            
+        El producto ha sido reservado
+      </div>";
+        }
+
+        }
     }
-
-    
-
 ?>
 
 <html>
@@ -27,60 +57,88 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"> 
      
     
-    </head>
+</head>
 
 <body>
 
     <div class="container">
         <br>
     <h2>Productos</h2>
-    <a href="CompraProducto.php" class="cart-link" title="Ver Carrito">
-        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-    </a>
-    <br>
+
+    <div class="message_box" style="padding: 5px 40px;">
+        <?php echo $status; ?>
+    </div>
+
+
+    <?php
+        if(!empty($_SESSION["shopping_cart"])) {
+            $cart_count = count(array_keys($_SESSION["shopping_cart"]));
+    ?>
+    <div class="cart_div pull-right">
+        <a href="Carrito.php">Reservas <span class="badge badge-secondary"><?php echo $cart_count; ?></span></a>
+    </div>
+
+    <div class="cart_div pull-left" style="padding: 0px 40px;">
+        <a href="ClienteLogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
+    </div> 
+    <br><br>
+
+    <?php
+        } else {
+    ?>
+
+    <div class="cart_div pull-left" style="padding: 0px 40px;">
+        <a href="ClienteLogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
+    </div> 
+    <br><br>
+
+    <?php
+        }
+    ?>
+    
+
     <ul class="responsive-table">
         <li class="table-header">
-        <div class="col col-1 ui-helper-center">IMAGEN</div>
-        <div class="col col-2 ui-helper-center">NOMBRE</div>
-        <div class="col col-3 ui-helper-center">DESCRIPCION</div>
-        <div class="col col-4 ui-helper-center">PRECIO</div>
-        <div class="col col-5 ui-helper-center">CANTIDAD</div>
-        <div class="col col-6 ui-helper-center">OPCIONES</div>
+            <div class="col col-1 ui-helper-center">IMAGEN</div>
+            <div class="col col-2 ui-helper-center">NOMBRE</div>
+            <div class="col col-3 ui-helper-center">DESCRIPCION</div>
+            <div class="col col-4 ui-helper-center">CANTIDAD DISPONIBLE</div>
+            <div class="col col-5 ui-helper-center">PRECIO</div>
+            <div class="col col-6 ui-helper-center">OPCIONES</div>
         </li>
+
         <?php 
-            while($row = $result->fetch_assoc()) {  ?>
-                
-                <li class="table-row">
-                    <div class="col col-1 ui-helper-center"><img class="imagen" src="<?php echo $row['IMAGEN']?>"></div>
-                    <div class="col col-2 ui-helper-center"><?php echo $row['NOMBRE']?></div>
-                    <div class="col col-3 ui-helper-center"><?php echo $row['DESCRIPCION']?></div>
-                    <div class="col col-4 ui-helper-center"><?php echo $row['PRECIO']?></div>
-                    <div class="col col-5 ui-helper-center"><input type='number' name='quantity' id='quantity' value='1' class='form-control' /></div>
-                    <div class="col col-6 ui-helper-center">
-                        <div>
-                            <button type="submit" class="btn btn-outline-success reservar" >Reservar</button>
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-outline-primary comprar" 
-                            onclick="location.href='CarritoAccion.php?action=agregar&qty=<?php echo $_COOKIE['qty']; ?>;&id=<?php echo $row['ID_PRODUCTO']; ?>'">Comprar</button>
-                        </div>
-                    </div>
-                </li>
+            $result = mysqli_query($conn,"SELECT * FROM `producto`");
+            while($row = $result->fetch_assoc()) {  
+                if ($row['ESTADO'] === 'D') { ?>
+                    <form method='post' action=''>
+                        <li class="table-row">
+                            <input type='hidden' name='code' value="<?php echo $row['ID_PRODUCTO']?>" />
+                            <div class="col col-1 ui-helper-center"><img class="imagen" src="<?php echo $row['IMAGEN']?>"></div>
+                            <div class="col col-2 ui-helper-center"><?php echo $row['NOMBRE']?></div>
+                            <div class="col col-3 ui-helper-center"><?php echo $row['DESCRIPCION']?></div>
+                            <div class="col col-4 ui-helper-center"><?php echo $row['CANTIDAD']?></div>
+                            <div class="col col-5 ui-helper-center">₡<?php echo $row['PRECIO']?></div>
+                            <div class="col col-6 ui-helper-center">
+                                <div>
+                                    <button type="submit" class="btn btn-outline-primary comprar" >Reservar</button>
+                                </div>
+                            </div>
+                        </li>
+                    </form>
+                <?php
+                    }
+                ?>
         <?php
             }
         ?>
-        
-    </ul>
 
-    <script type='text/javascript'>
-        var value = $("#quantity").val();
-        $("#quantity").on('keyup change click', function () {
-            if(this.value !== value) {
-                value = this.value;
-                
-                document.cookie = "qty=".value
-            }        
-        });
+    <script>
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove(); 
+            });
+        }, 4000);
     </script>
-    
 </body>
+</html>
