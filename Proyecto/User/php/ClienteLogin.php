@@ -47,7 +47,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
 
-	<body onload="cargarTabla()">
+	<body onload="start()">
 
 		<!-- Navbar de la pagina -->
 		<div id="navbar">

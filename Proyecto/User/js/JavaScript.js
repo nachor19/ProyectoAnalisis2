@@ -187,6 +187,10 @@ function soloNumeros(e){
         return false;
     }
 }
+function start(){
+    setFecha();
+    cargarTabla();
+}
 function setFecha(){
   var fecha = new Date(); //Fecha actual
   var mes = fecha.getMonth()+1; //obteniendo mes
@@ -500,7 +504,7 @@ function consultarCita(llave){
 }
 function volver(){
     $("#verCitaModal").modal("toggle");
-    window.location.href = '../html/Index.html';
+    window.location.href = '../html/Index.html#sacarCita';
      $(window).load(function(){        
    $('#myModal').modal('show');
     }); 
