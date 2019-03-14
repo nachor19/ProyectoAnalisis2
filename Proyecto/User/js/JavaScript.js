@@ -254,7 +254,7 @@ function validarFormSesion(){
     else{
         $("#emailSesion").css('border', '');
         $("#emailSesionErr").remove();
-    }
+    }   
     if(pwd.length == 0){
         $("#pwdSesion").css('border', '1px solid red');
         $("#pwdSesionErr").addClass("alert alert-danger");
