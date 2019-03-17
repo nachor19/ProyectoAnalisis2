@@ -76,6 +76,7 @@ function guardarCliente(llave){
         });
     }
 }
+
 function validarFormRegistro(){
     var cedula = $("#cedula").val();
     var nombre = $("#nombre").val();
@@ -190,6 +191,7 @@ function soloNumeros(e){
 function start(){
     setFecha();
     cargarTabla();
+    deshabilitar();
 }
 function setFecha(){
   var fecha = new Date(); //Fecha actual
@@ -202,9 +204,17 @@ function setFecha(){
   if(mes<10){
     mes='0'+mes //agrega cero si el menor de 10
     }   
-   var date = ano+"-"+mes+"-"+dia;
+   var date = mes+"/"+dia+"/"+ano;
     document.getElementById('fecha').setAttribute("value", date);
-    document.getElementById('fecha').setAttribute("min", date);
+    return date;
+}
+function deshabilitar(){
+    document.getElementById('fecha').setAttribute("readonly", 'readonly');
+}
+//para poder llamar 2 funciones en html
+function desyset(){
+    deshabilitar();
+    setFecha();
 }
 // funcion que se encarga de iniciar sesion mediante AJAX
 function iniciarSesion(llave){

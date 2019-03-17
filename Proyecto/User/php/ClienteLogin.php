@@ -39,6 +39,12 @@
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowreorder/1.2.5/js/dataTables.rowReorder.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+    	 $( function() {
+      	 $( "#fecha" ).datepicker({ minDate: setFecha()});
+    	 } );
+    	</script>
 
 		<!-- nuestros estilos-->
 		<link rel="stylesheet" type="text/css" href="../css/EstilosLogin.css">
@@ -183,7 +189,7 @@
 						</div>
 						<div class="form-group">
                    			<label for="fecha">Fecha: </label><br>
-							<input type="date" name="fecha" id="fecha" style="width:250px;height:40px" min="09/03/2019" required>
+							<input type="text" name="fecha" id="fecha" style="width:250px;height:40px" required>
 							<span class="validity"></span>
 						</div>
 					</div>

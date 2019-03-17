@@ -8,9 +8,11 @@
    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="HTML, CSS, JavaScript">
    <title>Ver Citas</title>
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="../css/EstilosVerCita.css">
-   <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
    <script>
       $(document).ready(function()
@@ -19,8 +21,14 @@
          $('#verCitaModal').modal({backdrop: 'static', keyboard: false})
       });
     </script>
+    <script>
+     $( function() {
+      $( "#fecha" ).datepicker({ minDate: setFecha()});
+    } );
+    </script>
+
 </head>
-<body onload="setFecha()">
+<body onload="desyset()">
    <div class="modal fade bg-dark text-white" data-keyboard="false" data-backdrop="static" id="verCitaModal" tabindex="-1" role="dialog" aria-labelledby="verCitaModal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -52,8 +60,8 @@
                   		  	</select>
 						</div>
 						<div class="form-group">
-                   			<label for="fecha">Fecha: </label><br>
-							<input type="date" name="fecha" id="fecha" required>
+              <label for="fecha">Fecha: </label><br>
+							<input type="text" name="fecha" id="fecha" required>
 							<span class="validity"></span>
 						</div>
 						<div>
