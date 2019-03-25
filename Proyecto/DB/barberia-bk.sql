@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 25, 2019 at 02:26 AM
+-- Generation Time: Mar 24, 2019 at 05:19 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -269,13 +269,13 @@ ALTER TABLE `cita`
 -- AUTO_INCREMENT for table `orden`
 --
 ALTER TABLE `orden`
-  MODIFY `ORDEN_ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ORDEN_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `orden_producto`
 --
 ALTER TABLE `orden_producto`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `producto`

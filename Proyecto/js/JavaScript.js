@@ -59,6 +59,7 @@ function guardarCliente(llave){
                 email: email.val(),
                 pwd: pwd.val()
             }, success: function(respuesta){
+                console.log(respuesta);
                 if(respuesta == "Guardado"){
                     $("#registrarseModal").modal("toggle");
                     window.location.href = '../php/ClienteLogin.php';
@@ -239,11 +240,18 @@ function iniciarSesion(llave){
                         $(this).html("");
                         $(this).css("display", "");
                     });
-                }
-                else{
+                } if (respuesta == "Bienvenido cliente") {
                     $("#iniciarSesionModal").modal("toggle");
 
                     window.location.href = '../php/ClienteLogin.php';
+                } if (respuesta == "Bienvenido admin") {
+                    $("#iniciarSesionModal").modal("toggle");
+
+                    window.location.href = '../php/AdminLogin.php';
+                } if (respuesta == "Bienvenido barbero") {
+                    $("#iniciarSesionModal").modal("toggle");
+
+                    window.location.href = '../php/BarberoLogin.php';
                 }
             }
         });

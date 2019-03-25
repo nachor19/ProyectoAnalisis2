@@ -5,7 +5,7 @@
     if(isset($_POST['llave'])){
 
 
-        // si es guardar un cliente
+        // si es guardar un usuario
         if($_POST['llave'] == "guardarCliente"){
             $cedula = $_POST['cedula'];
             $nombre = $_POST['nombre'];
@@ -16,8 +16,8 @@
             $hashed_pwd = password_hash(trim($_POST['pwd']), PASSWORD_DEFAULT);
 
             // verificar si ese correo aun no exite
-            $sql = mysqli_query($conn, "SELECT * FROM cliente WHERE emailc = '$email';");
-            $sql2 = mysqli_query($conn, "SELECT * FROM cliente WHERE cedula = '$cedula';");
+            $sql = mysqli_query($conn, "SELECT * FROM usuario WHERE emailc = '$email';");
+            $sql2 = mysqli_query($conn, "SELECT * FROM usuario WHERE cedula = '$cedula';");
 
             if (mysqli_num_rows($sql) > 0) {
                 echo "El correo ingresado ya ha sido registrado.";
@@ -28,10 +28,10 @@
             }
             else{
                 // insertar los datos
-                $query = mysqli_query($conn, "INSERT INTO cliente (cedula, nombre, primerapellido, segundoapellido, emailc, contrasenna, telefono) VALUES ('$cedula', '$nombre', '$primerApellido', '$segundoApellido', '$email', '$hashed_pwd', '$telefono');");
+                $query = mysqli_query($conn, "INSERT INTO usuario (cedula, nombre, primerapellido, segundoapellido, emailc, contrasenna, telefono) VALUES ('$cedula', '$nombre', '$primerApellido', '$segundoApellido', '$email', '$hashed_pwd', '$telefono');");
                 
-                // traer nombre y id del cliente
-                $query = mysqli_query($conn, "SELECT cedula, nombre FROM cliente WHERE emailc = '$email';");
+                // traer nombre y id del usuario
+                $query = mysqli_query($conn, "SELECT cedula, nombre FROM usuario WHERE emailc = '$email';");
 
                 // iniciar sesion
                 session_start();
@@ -54,7 +54,7 @@
             $pwd = $_POST['pwd'];
 
             // ver si ese correo existe en base de datos
-            $query = mysqli_query($conn, "SELECT cedula, nombre, emailc, contrasenna FROM cliente WHERE emailc = '$email';");
+            $query = mysqli_query($conn, "SELECT cedula, nombre, emailc, contrasenna, rol FROM usuario WHERE emailc = '$email';");
 
             if(mysqli_num_rows($query) > 0){
                 // crear arreglo asociativo con los resultados
@@ -67,9 +67,16 @@
                     // salvarlos en la sesion
                     $_SESSION['cedula'] = $datos['cedula'];
                     $_SESSION['nombre'] = $datos['nombre'];
+                    if ($datos['rol'] == 1 ) {
+                        $_SESSION['rol'] = 'cliente';
+                        echo "Bienvenido cliente";
+                        return;
+                    } else {
+                        $_SESSION['rol'] = 'admin';
+                        echo "Bienvenido admin";
+                        return;
+                    }
                     
-                    echo "Correcto";
-                    return;
                 }
                 else{
                     // contraseña incorrecta
@@ -88,7 +95,7 @@
             $id_usuario = $_SESSION['cedula'];
             $email = $_POST['email'];
 
-            if(!mysqli_query($conn, "UPDATE cliente SET emailc = '$email' WHERE cedula = '$id_usuario';")){
+            if(!mysqli_query($conn, "UPDATE usuario SET emailc = '$email' WHERE cedula = '$id_usuario';")){
                 echo "Error!";
                 return;
             }
@@ -103,7 +110,7 @@
             $id_usuario = $_SESSION['cedula'];
             $hashed_pwd = password_hash(trim($_POST['pwd']), PASSWORD_DEFAULT);
 
-            if(!mysqli_query($conn, "UPDATE cliente SET contrasenna = '$hashed_pwd' WHERE cedula = '$id_usuario';")){
+            if(!mysqli_query($conn, "UPDATE usuario SET contrasenna = '$hashed_pwd' WHERE cedula = '$id_usuario';")){
                 echo "Error!";
                 return;
             }
@@ -128,7 +135,7 @@
                 return;
             }
         }
-                // si es eliminar cliente
+                // si es eliminar usuario
         if($_POST['llave'] == "eliminarCuenta"){
             // inicializar la sesion
             session_start();
@@ -138,13 +145,13 @@
             $_SESSION = array();
             // destruir la sesion y revisar por errores
             if(session_destroy()){
-                // eliminar todas las compras de este cliente            
+                // eliminar todas las compras de este usuario            
                 if(!mysqli_query($conn, "DELETE FROM cita WHERE cedula = '$id_usuario';")){
                     echo "Error!";
                     return;
                 }
-                // eliminar al cliente
-                if(!mysqli_query($conn, "DELETE FROM cliente WHERE cedula = '$id_usuario';")){
+                // eliminar al usuario
+                if(!mysqli_query($conn, "DELETE FROM usuario WHERE cedula = '$id_usuario';")){
                     echo "Error!";
                     return;
                 }
