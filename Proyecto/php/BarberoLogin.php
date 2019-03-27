@@ -11,7 +11,7 @@
 
 <!DOCTYPE html>
 <html>
-	<head>
+<head>
 		<title>Mae's</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,7 +73,7 @@
 						<li><a class="nav-link" href="#contacto">Contáctenos</a></li>
 					</ul>
 					<ul class="navbar-nav ml-auto">
-						<li><a class="nav-link" href="Ajustes.php">Ajustes</a></li>
+						<li><a class="nav-link" href="AjustesBarbero.php">Ajustes</a></li>
 						<li><button type="button" class="btn btn-link" onclick="cerrarSesion('cerrarSesion')">Salir</button></li>
 					</ul>
 				</div>
@@ -82,8 +82,9 @@
         
         <div class="row">
             <div class="col-xs-8 col-sm-8">
-                <h2 class="pull-left">Barbero</h2>
-                <h2 class="pull-left">Bienvenido, <?php echo $_SESSION['nombre'] ?> </h2>
+                <p><h2 class="pull-left">Barbero</h2></p>
+                
+                <p><h2 >Bienvenido, <?php echo $_SESSION['nombre'] ?> </h2></p>
             </div>
         </div>
                  
@@ -95,8 +96,8 @@
                             <i class="fa fa-envelope-o"></i>
                         </span>
                         <div class="text-box" >
-                            <p class="main-text">120 nuevos</p>
-                            <p class="text-muted">Mensajes</p>
+                            <p class="main-text">4 Citas</p>
+                            <p class="text-muted">Pendientes</p>
                         </div>
                     </div>
 		        </div>
@@ -106,8 +107,8 @@
                             <i class="fa fa-bell-o"></i>
                         </span>
                         <div class="text-box" >
-                            <p class="main-text">4 Nuevas</p>
-                            <p class="text-muted">Citas</p>
+                            <p class="main-text">Mi Horario</p>
+                            <p class="text-muted">Semana Laboral</p>
                         </div>
                     </div>
 		        </div>
@@ -136,19 +137,15 @@
 			<div>
         </div>
                    
-     <!-- /. WRAPPER  -->
-    <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
-    <!-- JQUERY SCRIPTS -->
-    <script src="../js/jquery-1.10.2.js"></script>
-      <!-- BOOTSTRAP SCRIPTS -->
-    <script src="../js/bootstrap.min.js"></script>
-    <!-- METISMENU SCRIPTS -->
-    <script src="../js/jquery.metisMenu.js"></script>
-     <!-- MORRIS CHART SCRIPTS -->
-     <script src="../js/morris/raphael-2.1.0.min.js"></script>
-    <script src="../js/morris/morris.js"></script>
-      <!-- CUSTOM SCRIPTS -->
-    <script src="../js/custom.js"></script>
+    <!-- javascript nuestro -->
+	<script src="../js/JavaScript.js"></script>
+
+    <script>
+        function openProductos() {
+            window.location.replace("verProductos.php");
+            return false;
+        }
+    </script>
     
    
 </body>

@@ -73,7 +73,7 @@
 						<li><a class="nav-link" href="#contacto">Contáctenos</a></li>
 					</ul>
 					<ul class="navbar-nav ml-auto">
-						<li><a class="nav-link" href="Ajustes.php">Ajustes</a></li>
+						<li><a class="nav-link" href="AjustesAdmin.php">Ajustes</a></li>
 						<li><button type="button" class="btn btn-link" onclick="cerrarSesion('cerrarSesion')">Salir</button></li>
 					</ul>
 				</div>
@@ -83,8 +83,9 @@
         
         <div class="row">
             <div class="col-xs-8 col-sm-8">
-                <h2 class="pull-left">Administrador</h2>
-                <h2 class="pull-left">Bienvenido, <?php echo $_SESSION['nombre'] ?> </h2>
+                <p><h2 class="pull-left">Administrador</h2></p>
+                
+                <p><h2 >Bienvenido, <?php echo $_SESSION['nombre'] ?> </h2></p>
             </div>
         </div>
                  

@@ -71,9 +71,16 @@
                         $_SESSION['rol'] = 'cliente';
                         echo "Bienvenido cliente";
                         return;
-                    } else {
+                    } if ($datos['rol'] == 2) {
                         $_SESSION['rol'] = 'admin';
                         echo "Bienvenido admin";
+                        return;
+                    } if ($datos['rol'] == 3) {
+                        $_SESSION['rol'] = 'barbero';
+                        echo "Bienvenido barbero";
+                        return;
+                    } else {
+                        echo "Correo o contraseña inválidos.";
                         return;
                     }
                     
