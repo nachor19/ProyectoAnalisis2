@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 25, 2019 at 02:26 AM
+-- Generation Time: Mar 27, 2019 at 04:34 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -176,6 +176,26 @@ INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMEN
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `ID_ROL` int(11) NOT NULL,
+  `NOMBRE_ROL` varchar(14) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`ID_ROL`, `NOMBRE_ROL`) VALUES
+(1, 'cliente'),
+(2, 'administrador'),
+(3, 'barbero');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `servicio`
 --
 
@@ -195,6 +215,40 @@ INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PR
 (6, '01:00:00', 'CORTE DE CABELLO Y BARBA', '6000'),
 (7, '02:00:00', 'ALISSETTE', '12000'),
 (8, '01:00:00', 'TEÑIDO DE CABELLO', '10000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `CEDULA` int(11) NOT NULL,
+  `NOMBRE` varchar(100) NOT NULL,
+  `PRIMERAPELLIDO` varchar(100) NOT NULL,
+  `SEGUNDOAPELLIDO` varchar(100) NOT NULL,
+  `EMAILC` varchar(100) NOT NULL,
+  `TELEFONO` varchar(8) NOT NULL,
+  `CONTRASENNA` varchar(100) NOT NULL,
+  `rol` tinyint(4) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `usuario`
+--
+
+INSERT INTO `usuario` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, `EMAILC`, `TELEFONO`, `CONTRASENNA`, `rol`) VALUES
+(4362646, 'Prueba3', 'Prueba3', 'Prueba3', 'dklfjl@gmail.com', '98327474', '$2y$10$q2JMnI61C.9rW3j470mpne.UwPkDO9IJUI64.PblluZSkYIbIyWme', 1),
+(12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq', 1),
+(117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i', 1),
+(117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne', 1),
+(123456789, 'Sofia', 'Matamoros', 'Viquez', 'mvsofia@hotmail.com', '88326518', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6', 1),
+(132456789, 'Minor', 'Solano', 'Nuñez', 'minor@gmail.com', '83457846', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK', 1),
+(345236243, 'Alejandro', 'Gonzalez', 'Gonzalez', 'alegonpov@gmail.com', '85408223', '$2y$10$.V917K/ZfMrMbIA862wQM.SsuVR/rsjIK0zs4Cvp3ihBVpdkLkdPO', 2),
+(347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi', 1),
+(546456546, 'Andres', 'Campos', 'Prado', 'maes@gmail.com', '23423423', '$2y$10$PD3N4gm7XpRWYTsNzmTZZeiNyjPL5FcEbcbxxMPlbRU444McRbwTS', 3),
+(999999999, 'Ricardo', 'Madrigal', 'Herrera', 'rch@gmail.com', '12341234', '$2y$10$XOepLspqo.V8GRbd9W6Oou0tN0cvp.za3CGsTL5bZJlD4HwPtj/iq', 1),
+(2147483647, 'Manfred', 'Martinez', 'Monge', 'manfred@gmail.com', '82143962', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6', 1);
 
 --
 -- Indexes for dumped tables
@@ -244,10 +298,22 @@ ALTER TABLE `producto`
   ADD PRIMARY KEY (`ID_PRODUCTO`);
 
 --
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`ID_ROL`);
+
+--
 -- Indexes for table `servicio`
 --
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`ID_SERVICIO`);
+
+--
+-- Indexes for table `usuario`
+--
+ALTER TABLE `usuario`
+  ADD PRIMARY KEY (`CEDULA`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -282,6 +348,12 @@ ALTER TABLE `orden_producto`
 --
 ALTER TABLE `producto`
   MODIFY `ID_PRODUCTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `ID_ROL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `servicio`
