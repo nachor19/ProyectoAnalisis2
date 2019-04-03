@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 27, 2019 at 04:34 PM
+-- Generation Time: Apr 03, 2019 at 06:35 PM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.3.2
 
@@ -242,6 +242,7 @@ INSERT INTO `usuario` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, 
 (12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq', 1),
 (117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i', 1),
 (117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne', 1),
+(123412341, 'dsfdsfs', 'fadsfdsf', 'asdfasdf', 'rch@gmail.co', '23432141', '$2y$10$TBRGZN02AMXQhpcZAxzi3.7uObIpDJwZBJRXU5NQRc9VO9t.RIaLK', 1),
 (123456789, 'Sofia', 'Matamoros', 'Viquez', 'mvsofia@hotmail.com', '88326518', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6', 1),
 (132456789, 'Minor', 'Solano', 'Nuñez', 'minor@gmail.com', '83457846', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK', 1),
 (345236243, 'Alejandro', 'Gonzalez', 'Gonzalez', 'alegonpov@gmail.com', '85408223', '$2y$10$.V917K/ZfMrMbIA862wQM.SsuVR/rsjIK0zs4Cvp3ihBVpdkLkdPO', 2),
@@ -313,7 +314,9 @@ ALTER TABLE `servicio`
 -- Indexes for table `usuario`
 --
 ALTER TABLE `usuario`
-  ADD PRIMARY KEY (`CEDULA`);
+  ADD PRIMARY KEY (`CEDULA`),
+  ADD UNIQUE KEY `EMAILC` (`EMAILC`),
+  ADD UNIQUE KEY `CEDULA` (`CEDULA`);
 
 --
 -- AUTO_INCREMENT for dumped tables

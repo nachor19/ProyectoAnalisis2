@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
     controlarDesplazamiento();
     controlarNavbar();
@@ -59,8 +58,16 @@ function guardarCliente(llave){
                 email: email.val(),
                 pwd: pwd.val()
             }, success: function(respuesta){
-                console.log(respuesta);
-                if(respuesta == "Guardado"){
+                if (respuesta == "email") {
+                    $("#email").css('border', '1px solid red');
+                    $("#emailErr").addClass("alert alert-danger");
+                    $("#emailErr").html("El correo ingresado ya existe");
+                } else if (respuesta == "id") {
+                    $("#cedula").css('border', '1px solid red');
+                    $("#cedulaErr").addClass("alert alert-danger");
+                    $("#cedulaErr").html("La cedula ingresada ya existe");
+                }
+                else if(respuesta == "Guardado"){
                     $("#registrarseModal").modal("toggle");
                     window.location.href = '../php/ClienteLogin.php';
                 }
@@ -95,8 +102,9 @@ function validarFormRegistro(){
         check = false;
     }
     else{
-        $("#nombre").css('border', '');
-        $("#nombreErr").remove();
+        $("#cedula").css('border', '');
+        $("#cedulaErr").removeClass("alert alert-danger");
+        $("#cedulaErr").html("");
     }
     if(nombre.length == 0){
         $("#nombre").css('border', '1px solid red');
@@ -133,21 +141,17 @@ function validarFormRegistro(){
         $("#emailErr").addClass("alert alert-danger");
         $("#emailErr").html("Por favor digite su correo electrónico");
         check = false;
-    }
-    else{
-        $("#email").css('border', '');
-        $("#emailErr").remove();
-    }
-    if (/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/i.test(correo)){
-        $("#email").css('border', '');
-        $("#emailErr").remove();
-    } 
-    else {
+    } else if (! /^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/i.test(correo)){
         $("#email").css('border', '1px solid red');
         $("#emailErr").addClass("alert alert-danger");
         $("#emailErr").html("Por favor ingrese un correo válido");
         check = false;
+    } else {
+        $("#email").css('border', '');
+        $("#emailErr").removeClass("alert alert-danger");
+        $("#emailErr").html("");
     }
+    
     if(pwd.length == 0){
         $("#pwd").css('border', '1px solid red');
         $("#pwdErr").addClass("alert alert-danger");
@@ -165,12 +169,7 @@ function validarFormRegistro(){
         $("#pwdErr").remove();
     }
 
-    if(check == false){
-        return false;
-    }
-    else{
-        return true;
-    }
+    return check;
 }
 function soloNumeros(e){
     key = e.keyCode || e.which;

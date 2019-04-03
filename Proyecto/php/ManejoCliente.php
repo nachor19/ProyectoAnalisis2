@@ -20,10 +20,10 @@
             $sql2 = mysqli_query($conn, "SELECT * FROM usuario WHERE cedula = '$cedula';");
 
             if (mysqli_num_rows($sql) > 0) {
-                echo "El correo ingresado ya ha sido registrado.";
+                echo "email";
                 return;
             }else if(mysqli_num_rows($sql2) > 0){
-                echo "La cedula ingresada ya ha sido registrada";
+                echo "id";
                 return;
             }
             else{
