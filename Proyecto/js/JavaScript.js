@@ -446,6 +446,112 @@ var cargarTabla = function(){
         ]
     });
 }
+var cargarTablaClientes = function(){
+    var tabla = $("#tabla_clientes").DataTable({
+        responsive: true,
+        select: {
+            style: 'single'
+        },
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejoAdmin.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTablaClientes'
+            }
+        },
+        "columns": [
+            {"data":"cedula"},
+            {"data":"nombre"},
+            {"data":"apellidos"},
+            {"data":"correo"},
+            {"data":"telefono"}
+        ]
+    });
+}
+var cargarTablaCitas = function(){
+    var tabla = $("#tabla_citas").DataTable({
+        responsive: true,
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejoAdmin.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTablaCitas'
+            }
+        },
+        "columns": [
+            {"data":"idcita"},
+            {"data":"nombre"},
+            {"data":"horario"},
+            {"data":"cedula"},
+            {"data":"usuario"},
+            {"data":"fecha"},
+            {"data":"desc"},
+            {"data":"servicio"},
+            {"data":"precio"}
+        ]
+    });
+}
+var cargarTablaBarberos = function(){
+    var tabla = $("#tabla_barberos").DataTable({
+        responsive: true,
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejoAdmin.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTablaBarberos'
+            }
+        },
+        "columns": [
+            {"data":"cedula"},
+            {"data":"nombre"},
+            {"data":"apellidos"},
+            {"data":"correo"},
+            {"data":"telefono"}
+        ]
+    });
+}
+var cargarTablaProductos = function(){
+    var tabla = $("#tabla_productos").DataTable({
+        responsive: true,
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejoAdmin.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTablaProductos'
+            }
+        },
+        "columns": [
+            {"data":"id_producto"},
+            {"data":"nombre"},
+            {"data":"desc"},
+            {"data":"precio"},
+            {"data":"cantidad"}
+        ]
+    });
+}
+
+function cargarTablas(){
+    cargarTablaClientes(); 
+    cargarTablaCitas();
+    cargarTablaBarberos();
+    cargarTablaProductos();
+}
 
 // funcion para SACAR CITA
 function sacarCita(llave){

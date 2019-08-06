@@ -169,9 +169,9 @@
                    			<label for="barbero">Barbero: </label>
                   		  	<select class="form-control" id="barbero" name="barbero" required>
                       	  		<?php
-	                            	$datos = mysqli_query($conn, "SELECT nombreb FROM barbero;");
+	                            	$datos = mysqli_query($conn, "SELECT NOMBRE FROM USUARIO WHERE ROL = 3");
 	                                while($fila = mysqli_fetch_array($datos)){
-	                               		echo "<option>" . $fila['nombreb']. "</option>";
+	                               		echo "<option>" . $fila['NOMBRE']. "</option>";
                            			}
                     	    	?>
                   		  	</select>

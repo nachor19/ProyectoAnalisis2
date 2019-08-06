@@ -32,6 +32,11 @@
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -39,13 +44,11 @@
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowreorder/1.2.5/js/dataTables.rowReorder.min.js"></script>
-		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		<script>
-    	 $( function() {
-      	 $( "#fecha" ).datepicker({ minDate: setFecha()});
-    	 } );
-    	</script>
-
+        <script>
+        $( function() {
+        $( "#tabs" ).tabs();
+        } );
+        </script>
 		<!-- nuestros estilos-->
         <link rel="stylesheet" type="text/css" href="../css/EstilosLogin.css">
         <link rel="stylesheet" type="text/css" href="../css/custom.css">
@@ -54,7 +57,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	</head>
     
-    <body>
+    <body onload="cargarTablas()">
         <div>
             <div>
             <div id="navbar">
@@ -87,57 +90,73 @@
                 
                 <p><h2 >Bienvenido, <?php echo $_SESSION['nombre'] ?> </h2></p>
             </div>
+        </div>        
+        <hr/>
+            
+        <div id="tabs">
+          <ul>
+            <li><a href="#tabs-1">Clientes</a></li>
+            <li><a href="#tabs-2">Citas</a></li>
+            <li><a href="#tabs-3">Barberos</a></li>
+            <li><a href="#tabs-4">Productos</a></li>
+          </ul>
+          <div id="tabs-1">
+            <table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_clientes">
+                <thead>
+                <th>Cedula</th>
+                 <th>Nombre</th>
+                 <th>Apellidos</th>
+                 <th>Correo Electronico</th>
+                 <th>Telefono</th> 
+                 </thead>
+                 <tbody>
+                </tbody>
+            </table>
+          </div>
+          <div id="tabs-2">
+            <table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_citas">
+                <thead>
+                <th># Cita</th>
+                 <th>Barbero</th>
+                 <th>Horario</th>
+                 <th>Cedula</th>
+                 <th>Cliente</th>
+                 <th>Fecha</th>
+                 <th>Descripcion</th>
+                 <th>Servicio</th>
+                 <th>Precio</th> 
+                 </thead>
+                 <tbody>
+                </tbody>
+            </table>
+          </div>
+          <div id="tabs-3">
+            <table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_barberos">
+                <thead>
+                <th>Cedula</th>
+                 <th>Nombre</th>
+                 <th>Apellidos</th>
+                 <th>Correo Electronico</th>
+                 <th>Telefono</th> 
+                 </thead>
+                 <tbody>
+                </tbody>
+            </table>
+          </div>
+            <div id="tabs-4">
+            <table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_productos">
+                <thead>
+                <th># Producto</th>
+                 <th>Nombre</th>
+                 <th>Descripcion</th>
+                 <th>Precio</th>
+                 <th>Cantidad</th> 
+                 </thead>
+                 <tbody>
+                </tbody>
+            </table>
+          </div>
         </div>
-                 
-        <hr />
-                <div class="row">
-                <div class="col-md-3 col-sm-6 col-xs-6">           
-			        <div class="panel panel-back noti-box">
-                        <span class="icon-box bg-color-red set-icon">
-                            <i class="fa fa-envelope-o"></i>
-                        </span>
-                        <div class="text-box" >
-                            <p class="main-text">120 nuevos</p>
-                            <p class="text-muted">Mensajes</p>
-                        </div>
-                    </div>
-		        </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">           
-                    <div class="panel panel-back noti-box">
-                        <span class="icon-box bg-color-blue set-icon">
-                            <i class="fa fa-bell-o"></i>
-                        </span>
-                        <div class="text-box" >
-                            <p class="main-text">4 Nuevas</p>
-                            <p class="text-muted">Citas</p>
-                        </div>
-                    </div>
-		        </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">           
-                    <div class="panel panel-back noti-box">
-                        <span class="icon-box bg-color-brown set-icon">
-                            <i class="fa fa-rocket"></i>
-                        </span>
-                        <div class="text-box" >
-                            <p class="main-text">3 Reservas</p>
-                            <p class="text-muted">Pendientes</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">           
-                    <div class="panel panel-back noti-box">
-                        <span class="icon-box bg-color-brown set-icon">
-                            <i class="fa fa-rocket"></i>
-                        </span>
-                        <div class="text-box" >
-                            <p class="main-text">6 Reservas</p>
-                            <p class="text-muted">Entregadas</p>
-                        </div>
-                    </div>
-		        </div>
-			<div>
-        </div>
-
 
     <!-- javascript nuestro -->
 	<script src="../js/JavaScript.js"></script>

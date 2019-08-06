@@ -2,10 +2,10 @@
 -- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 03, 2019 at 06:35 PM
--- Server version: 10.1.38-MariaDB
--- PHP Version: 7.3.2
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 06-08-2019 a las 21:27:09
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,44 +19,47 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `barberia`
+-- Base de datos: `barberia`
 --
+CREATE DATABASE IF NOT EXISTS `barberia` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `barberia`;
 
 DELIMITER $$
 --
--- Procedures
+-- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT FECHA, NOMBREB, ID_HORARIO, NOMBRESERVICIO, PRECIO 
-FROM BARBERO B, CITA C, servicio s 
-WHERE C.ID_BARBERO = B.ID_BARBERO AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = ID_CLIENTE$$
+DROP PROCEDURE IF EXISTS `SP_BARBEROS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_BARBEROS` ()  NO SQL
+SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 3$$
+
+DROP PROCEDURE IF EXISTS `SP_CITAS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CITAS` ()  NO SQL
+SELECT ID_CITA, B.NOMBRE, H.ID_HORARIO, U.CEDULA, concat_ws(' ', U.NOMBRE, U.PRIMERAPELLIDO) AS USUARIO, C.FECHA, DESCRIPCION, ESTADO, S.NOMBRESERVICIO, S.PRECIOSERVICIO 
+FROM cita C, usuario B, horario H, usuario U, servicio S
+WHERE C.ID_BARBERO = B.CEDULA AND C.ID_HORARIO = H.ID_HORARIO AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = U.CEDULA$$
+
+DROP PROCEDURE IF EXISTS `SP_PRODUCTOS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_PRODUCTOS` ()  NO SQL
+SELECT ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, CANTIDAD FROM producto$$
+
+DROP PROCEDURE IF EXISTS `SP_TABLACLIENTE`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT FECHA, b.NOMBRE, ID_HORARIO, NOMBRESERVICIO, PRECIO 
+FROM usuario B, CITA C, servicio s 
+WHERE C.ID_BARBERO = B.CEDULA AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = ID_CLIENTE$$
+
+DROP PROCEDURE IF EXISTS `SP_TABLACLIENTES`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTES` ()  NO SQL
+SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 1$$
 
 DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `barbero`
+-- Estructura de tabla para la tabla `cita`
 --
 
-CREATE TABLE `barbero` (
-  `ID_BARBERO` int(11) NOT NULL,
-  `NOMBREB` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `barbero`
---
-
-INSERT INTO `barbero` (`ID_BARBERO`, `NOMBREB`) VALUES
-(1, 'Cristian'),
-(2, 'Martin');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cita`
---
-
+DROP TABLE IF EXISTS `cita`;
 CREATE TABLE `cita` (
   `ID_CITA` int(11) NOT NULL,
   `ID_BARBERO` int(11) DEFAULT NULL,
@@ -70,40 +73,25 @@ CREATE TABLE `cita` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `cita`
+-- Volcado de datos para la tabla `cita`
 --
 
 INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `DESCRIPCION`, `ESTADO`, `ID_SERVICIO`, `PRECIO`) VALUES
-(35, 2, '11:00:00', 117090968, '2019-03-01', NULL, NULL, 5, '3000'),
-(36, 1, '15:00:00', 2147483647, '2019-03-01', NULL, NULL, 5, '3000'),
-(46, 1, '09:00:00', 117090968, '2019-03-01', NULL, NULL, 5, '3000'),
-(69, 2, '13:00:00', 117090968, '2019-03-08', NULL, NULL, 7, '12000'),
-(76, 2, '09:00:00', 117090968, '2019-03-08', NULL, NULL, 5, '3000'),
-(77, 1, '09:00:00', 117090968, '2019-03-08', NULL, NULL, 5, '3000'),
-(82, 2, '13:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
-(83, 2, '11:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
-(84, 2, '16:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
-(85, 2, '14:00:00', 117090968, '2019-03-09', NULL, NULL, 7, '12000'),
-(86, 2, '09:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
-(87, 1, '09:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
-(88, 2, '15:00:00', 117090968, '2019-03-09', NULL, NULL, 5, '3000'),
-(89, 1, '09:00:00', 117090968, '2019-09-03', NULL, NULL, 5, '3000'),
-(90, 1, '09:00:00', 117090968, '2019-03-22', NULL, NULL, 5, '3000'),
-(91, 2, '15:00:00', 117090968, '2019-03-24', NULL, NULL, 7, '12000'),
-(92, 2, '13:00:00', 117090968, '2019-03-24', NULL, NULL, 5, '3000');
+(94, 110780256, '11:00:00', 132456789, '2019-08-16', NULL, NULL, 7, '12000');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `horario`
+-- Estructura de tabla para la tabla `horario`
 --
 
+DROP TABLE IF EXISTS `horario`;
 CREATE TABLE `horario` (
   `ID_HORARIO` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `horario`
+-- Volcado de datos para la tabla `horario`
 --
 
 INSERT INTO `horario` (`ID_HORARIO`) VALUES
@@ -120,9 +108,10 @@ INSERT INTO `horario` (`ID_HORARIO`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orden`
+-- Estructura de tabla para la tabla `orden`
 --
 
+DROP TABLE IF EXISTS `orden`;
 CREATE TABLE `orden` (
   `ORDEN_ID` int(11) NOT NULL,
   `CLIENTE_ID` int(11) NOT NULL,
@@ -135,9 +124,10 @@ CREATE TABLE `orden` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orden_producto`
+-- Estructura de tabla para la tabla `orden_producto`
 --
 
+DROP TABLE IF EXISTS `orden_producto`;
 CREATE TABLE `orden_producto` (
   `ID` int(11) NOT NULL,
   `ORDEN_ID` int(11) NOT NULL,
@@ -148,9 +138,10 @@ CREATE TABLE `orden_producto` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `producto`
+-- Estructura de tabla para la tabla `producto`
 --
 
+DROP TABLE IF EXISTS `producto`;
 CREATE TABLE `producto` (
   `ID_PRODUCTO` int(11) NOT NULL,
   `NOMBRE` varchar(40) NOT NULL,
@@ -163,7 +154,7 @@ CREATE TABLE `producto` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `producto`
+-- Volcado de datos para la tabla `producto`
 --
 
 INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMENTARIO`, `ESTADO`, `CANTIDAD`, `IMAGEN`) VALUES
@@ -176,16 +167,17 @@ INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMEN
 -- --------------------------------------------------------
 
 --
--- Table structure for table `roles`
+-- Estructura de tabla para la tabla `roles`
 --
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `ID_ROL` int(11) NOT NULL,
   `NOMBRE_ROL` varchar(14) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `roles`
+-- Volcado de datos para la tabla `roles`
 --
 
 INSERT INTO `roles` (`ID_ROL`, `NOMBRE_ROL`) VALUES
@@ -196,9 +188,10 @@ INSERT INTO `roles` (`ID_ROL`, `NOMBRE_ROL`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `servicio`
+-- Estructura de tabla para la tabla `servicio`
 --
 
+DROP TABLE IF EXISTS `servicio`;
 CREATE TABLE `servicio` (
   `ID_SERVICIO` int(11) NOT NULL,
   `TIEMPO_REQUERIDO` time DEFAULT NULL,
@@ -207,7 +200,7 @@ CREATE TABLE `servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `servicio`
+-- Volcado de datos para la tabla `servicio`
 --
 
 INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PRECIOSERVICIO`) VALUES
@@ -219,9 +212,10 @@ INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PR
 -- --------------------------------------------------------
 
 --
--- Table structure for table `usuario`
+-- Estructura de tabla para la tabla `usuario`
 --
 
+DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `CEDULA` int(11) NOT NULL,
   `NOMBRE` varchar(100) NOT NULL,
@@ -234,12 +228,13 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `usuario`
+-- Volcado de datos para la tabla `usuario`
 --
 
 INSERT INTO `usuario` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, `EMAILC`, `TELEFONO`, `CONTRASENNA`, `rol`) VALUES
 (4362646, 'Prueba3', 'Prueba3', 'Prueba3', 'dklfjl@gmail.com', '98327474', '$2y$10$q2JMnI61C.9rW3j470mpne.UwPkDO9IJUI64.PblluZSkYIbIyWme', 1),
 (12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq', 1),
+(110780256, 'Dyver', 'Brenes', 'Mora', 'dyver@gmail.com', '86567825', '$2y$10$xdXdSro.UDpxDB/2hScIBO0GCY6WaNoyEbNKsXJFXeJ8di0Tx.qma', 3),
 (117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i', 1),
 (117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne', 1),
 (123412341, 'dsfdsfs', 'fadsfdsf', 'asdfasdf', 'rch@gmail.co', '23432141', '$2y$10$TBRGZN02AMXQhpcZAxzi3.7uObIpDJwZBJRXU5NQRc9VO9t.RIaLK', 1),
@@ -248,21 +243,17 @@ INSERT INTO `usuario` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, 
 (345236243, 'Alejandro', 'Gonzalez', 'Gonzalez', 'alegonpov@gmail.com', '85408223', '$2y$10$.V917K/ZfMrMbIA862wQM.SsuVR/rsjIK0zs4Cvp3ihBVpdkLkdPO', 2),
 (347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi', 1),
 (546456546, 'Andres', 'Campos', 'Prado', 'maes@gmail.com', '23423423', '$2y$10$PD3N4gm7XpRWYTsNzmTZZeiNyjPL5FcEbcbxxMPlbRU444McRbwTS', 3),
+(777777777, 'Maria', 'Mora', 'Li', 'maria@gmail.com', '89667456', '$2y$10$mra.wpnKamyjANEUG8ItkeaWtvqGR./z3CgNqFqC44nrYS.bNbVwy', 1),
+(888888888, 'Benito', 'Camelas', 'Mora', 'benito@gmail.com', '88888888', '$2y$10$XNqPa3hnynZaEA0ChWCEWeNE.WaeNJoNOInxVGdYFdnaXQVKiV3bi', 2),
 (999999999, 'Ricardo', 'Madrigal', 'Herrera', 'rch@gmail.com', '12341234', '$2y$10$XOepLspqo.V8GRbd9W6Oou0tN0cvp.za3CGsTL5bZJlD4HwPtj/iq', 1),
 (2147483647, 'Manfred', 'Martinez', 'Monge', 'manfred@gmail.com', '82143962', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6', 1);
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `barbero`
---
-ALTER TABLE `barbero`
-  ADD PRIMARY KEY (`ID_BARBERO`);
-
---
--- Indexes for table `cita`
+-- Indices de la tabla `cita`
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`ID_CITA`),
@@ -272,20 +263,20 @@ ALTER TABLE `cita`
   ADD KEY `ID_SERVICIO` (`ID_SERVICIO`);
 
 --
--- Indexes for table `horario`
+-- Indices de la tabla `horario`
 --
 ALTER TABLE `horario`
   ADD PRIMARY KEY (`ID_HORARIO`);
 
 --
--- Indexes for table `orden`
+-- Indices de la tabla `orden`
 --
 ALTER TABLE `orden`
   ADD PRIMARY KEY (`ORDEN_ID`),
   ADD KEY `cliente_id_fk` (`CLIENTE_ID`);
 
 --
--- Indexes for table `orden_producto`
+-- Indices de la tabla `orden_producto`
 --
 ALTER TABLE `orden_producto`
   ADD PRIMARY KEY (`ID`),
@@ -293,25 +284,25 @@ ALTER TABLE `orden_producto`
   ADD KEY `producto_id_fk` (`PRODUCTO_ID`);
 
 --
--- Indexes for table `producto`
+-- Indices de la tabla `producto`
 --
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`ID_PRODUCTO`);
 
 --
--- Indexes for table `roles`
+-- Indices de la tabla `roles`
 --
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`ID_ROL`);
 
 --
--- Indexes for table `servicio`
+-- Indices de la tabla `servicio`
 --
 ALTER TABLE `servicio`
   ADD PRIMARY KEY (`ID_SERVICIO`);
 
 --
--- Indexes for table `usuario`
+-- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`CEDULA`),
@@ -319,72 +310,66 @@ ALTER TABLE `usuario`
   ADD UNIQUE KEY `CEDULA` (`CEDULA`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `barbero`
---
-ALTER TABLE `barbero`
-  MODIFY `ID_BARBERO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `cita`
+-- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
--- AUTO_INCREMENT for table `orden`
+-- AUTO_INCREMENT de la tabla `orden`
 --
 ALTER TABLE `orden`
   MODIFY `ORDEN_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orden_producto`
+-- AUTO_INCREMENT de la tabla `orden_producto`
 --
 ALTER TABLE `orden_producto`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `producto`
+-- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
   MODIFY `ID_PRODUCTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `roles`
+-- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
   MODIFY `ID_ROL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `servicio`
+-- AUTO_INCREMENT de la tabla `servicio`
 --
 ALTER TABLE `servicio`
   MODIFY `ID_SERVICIO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- Constraints for dumped tables
+-- Restricciones para tablas volcadas
 --
 
 --
--- Constraints for table `cita`
+-- Filtros para la tabla `cita`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`CEDULA`) REFERENCES `usuario` (`CEDULA`),
-  ADD CONSTRAINT `cita_ibfk_2` FOREIGN KEY (`ID_BARBERO`) REFERENCES `barbero` (`ID_BARBERO`),
   ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`ID_HORARIO`) REFERENCES `horario` (`ID_HORARIO`),
-  ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`ID_SERVICIO`) REFERENCES `servicio` (`ID_SERVICIO`);
+  ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`ID_SERVICIO`) REFERENCES `servicio` (`ID_SERVICIO`),
+  ADD CONSTRAINT `cita_ibfk_5` FOREIGN KEY (`ID_BARBERO`) REFERENCES `usuario` (`CEDULA`);
 
 --
--- Constraints for table `orden`
+-- Filtros para la tabla `orden`
 --
 ALTER TABLE `orden`
   ADD CONSTRAINT `cliente_id_fk` FOREIGN KEY (`CLIENTE_ID`) REFERENCES `usuario` (`CEDULA`);
 
 --
--- Constraints for table `orden_producto`
+-- Filtros para la tabla `orden_producto`
 --
 ALTER TABLE `orden_producto`
   ADD CONSTRAINT `orden_id_fk` FOREIGN KEY (`ORDEN_ID`) REFERENCES `orden` (`ORDEN_ID`),

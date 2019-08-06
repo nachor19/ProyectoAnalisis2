@@ -7,22 +7,19 @@
     date_default_timezone_set('America/Costa_Rica');
 
         // si se quiere cargar de nuevo la tabla
-        if($_POST['llave'] == "cargarTabla"){
+        if($_POST['llave'] == "cargarTablaClientes"){
 
             // obtener todas las citas para el cliente
             //lo comentado son intentos fallidos de usar sp
-            $id_usuario = $_SESSION['cedula'];
             //$query = mysqli_query($conn, "SELECT * FROM CITA WHERE CEDULA = '$id_usuario';");
-            $query = mysqli_query($conn, "CALL SP_TABLACLIENTE('$id_usuario');");
+            $query = mysqli_query($conn, "CALL SP_TABLACLIENTES();");
 			if($query && $query->num_rows > 0){
 				while($data = mysqli_fetch_assoc($query)){
-                    $sub_array["fecha"] = $data['FECHA'];
-                    $sub_array['hora_cita'] = $data['ID_HORARIO'];
-                    $sub_array['barbero'] = $data['NOMBRE'];
-                    //$sub_array['barbero'] = $data['ID_BARBERO'];
-                    //$sub_array['servicio'] = $data['ID_SERVICIO'];
-                    $sub_array['servicio'] = $data['NOMBRESERVICIO'];
-                    $sub_array ['precio'] = $data['PRECIO'];
+                    $sub_array["cedula"] = $data['CEDULA'];
+                    $sub_array['nombre'] = $data['NOMBRE'];
+                    $sub_array['apellidos'] = $data['APELLIDOS'];
+                    $sub_array['correo'] = $data['EMAILC'];
+                    $sub_array ['telefono'] = $data['TELEFONO'];
                     $arreglo['data'][] = $sub_array;
                 }
                 echo json_encode($arreglo);
@@ -33,7 +30,79 @@
                 return;
             }
         }
+                if($_POST['llave'] == "cargarTablaCitas"){
 
+            // obtener todas las citas para el cliente
+            //lo comentado son intentos fallidos de usar sp
+            //$query = mysqli_query($conn, "SELECT * FROM CITA WHERE CEDULA = '$id_usuario';");
+            $query = mysqli_query($conn, "CALL SP_CITAS();");
+            if($query && $query->num_rows > 0){
+                while($data = mysqli_fetch_assoc($query)){
+                    $sub_array["idcita"] = $data['ID_CITA'];
+                    $sub_array['nombre'] = $data['NOMBRE'];
+                    $sub_array['horario'] = $data['ID_HORARIO'];
+                    $sub_array['cedula'] = $data['CEDULA'];
+                    $sub_array ['usuario'] = $data['USUARIO'];
+                    $sub_array["fecha"] = $data['FECHA'];
+                    $sub_array['desc'] = $data['DESCRIPCION'];
+                    $sub_array['servicio'] = $data['NOMBRESERVICIO'];
+                    $sub_array ['precio'] = $data['PRECIOSERVICIO'];
+                    $arreglo['data'][] = $sub_array;
+                }
+                echo json_encode($arreglo);
+            }
+            else{
+                $arreglo['data'] = array();
+                echo json_encode($arreglo);
+                return;
+            }
+        }
+                if($_POST['llave'] == "cargarTablaBarberos"){
+
+            // obtener todas las citas para el cliente
+            //lo comentado son intentos fallidos de usar sp
+            //$query = mysqli_query($conn, "SELECT * FROM CITA WHERE CEDULA = '$id_usuario';");
+            $query = mysqli_query($conn, "CALL SP_BARBEROS();");
+            if($query && $query->num_rows > 0){
+                while($data = mysqli_fetch_assoc($query)){
+                    $sub_array["cedula"] = $data['CEDULA'];
+                    $sub_array['nombre'] = $data['NOMBRE'];
+                    $sub_array['apellidos'] = $data['APELLIDOS'];
+                    $sub_array['correo'] = $data['EMAILC'];
+                    $sub_array ['telefono'] = $data['TELEFONO'];
+                    $arreglo['data'][] = $sub_array;
+                }
+                echo json_encode($arreglo);
+            }
+            else{
+                $arreglo['data'] = array();
+                echo json_encode($arreglo);
+                return;
+            }
+        }
+                        if($_POST['llave'] == "cargarTablaProductos"){
+
+            // obtener todas las citas para el cliente
+            //lo comentado son intentos fallidos de usar sp
+            //$query = mysqli_query($conn, "SELECT * FROM CITA WHERE CEDULA = '$id_usuario';");
+            $query = mysqli_query($conn, "CALL SP_PRODUCTOS();");
+            if($query && $query->num_rows > 0){
+                while($data = mysqli_fetch_assoc($query)){
+                    $sub_array["id_producto"] = $data['ID_PRODUCTO'];
+                    $sub_array['nombre'] = $data['NOMBRE'];
+                    $sub_array['desc'] = $data['DESCRIPCION'];
+                    $sub_array['precio'] = $data['PRECIO'];
+                    $sub_array ['cantidad'] = $data['CANTIDAD'];
+                    $arreglo['data'][] = $sub_array;
+                }
+                echo json_encode($arreglo);
+            }
+            else{
+                $arreglo['data'] = array();
+                echo json_encode($arreglo);
+                return;
+            }
+        }
 
         if($_POST['llave'] == "sacarCita"){
             $barbero = $_POST['barbero'];
@@ -41,10 +110,10 @@
             $horario = $_POST['horario'];
             $fecha = $_POST['fecha'];           
             // obtener barbero
-            $query = mysqli_query($conn, "SELECT * FROM USUARIO WHERE ROL = 3;");
+            $query = mysqli_query($conn, "SELECT * FROM BARBERO;");
             while($fila = mysqli_fetch_array($query)){
-                if($fila['NOMBRE'] == $barbero){
-                    $id_barbero = $fila['CEDULA'];
+                if($fila['NOMBREB'] == $barbero){
+                    $id_barbero = $fila['ID_BARBERO'];
                     break;
                 }
             }
@@ -90,10 +159,10 @@
             $horario = $_POST['horario'];
             $fecha = $_POST['fecha'];           
             // obtener barbero
-            $query = mysqli_query($conn, "SELECT * FROM USUARIO WHERE ROL = 3");
+            $query = mysqli_query($conn, "SELECT * FROM BARBERO;");
             while($fila = mysqli_fetch_array($query)){
-                if($fila['NOMBRE'] == $barbero){
-                    $id_barbero = $fila['CEDULA'];
+                if($fila['NOMBREB'] == $barbero){
+                    $id_barbero = $fila['ID_BARBERO'];
                     break;
                 }
             }
