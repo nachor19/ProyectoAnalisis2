@@ -51,7 +51,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="keywords" content="HTML, CSS, JavaScript">
     <title>Productos</title>
-    <link rel="stylesheet" type="text/css" href="../css/Productos.css">
+    <link rel="stylesheet" type="text/css" href="../css/productos.css">
     <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"> 
@@ -79,7 +79,7 @@
     </div>
 
     <div class="cart_div pull-left" style="padding: 0px 40px;">
-        <a href="ClienteLogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
+        <a href="clientelogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
     </div> 
     <br><br>
 
@@ -88,7 +88,7 @@
     ?>
 
     <div class="cart_div pull-left" style="padding: 0px 40px;">
-        <a href="ClienteLogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
+        <a href="clientelogin.php">Regresar <span class="fa fa-arrow-left"></span></a>
     </div> 
     <br><br>
 

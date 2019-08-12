@@ -33,8 +33,6 @@
                 return;
             }
         }
-
-
         if($_POST['llave'] == "sacarCita"){
             $barbero = $_POST['barbero'];
             $servicio = $_POST['servicio'];
@@ -82,6 +80,52 @@
             else{
                 $query = mysqli_query($conn, "INSERT INTO CITA (ID_BARBERO, ID_HORARIO, ID_SERVICIO, PRECIO, CEDULA, FECHA) 
                         VALUES ('$id_barbero', '$id_horario', '$id_servicio', '$precio', '$id_usuario', '$date');");
+                echo "Guardado";
+            }
+        }
+                if($_POST['llave'] == "sacarCitaAdmin"){
+            $barbero = $_POST['barbero'];
+            $servicio = $_POST['servicio'];
+            $horario = $_POST['horario'];
+            $fecha = $_POST['fecha'];  
+            $cliente = $_POST['cliente'];         
+            // obtener barbero
+            $query = mysqli_query($conn, "SELECT * FROM USUARIO WHERE ROL = 3;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['NOMBRE'] == $barbero){
+                    $id_barbero = $fila['CEDULA'];
+                    break;
+                }
+            }
+            $query = mysqli_query($conn, "SELECT * FROM HORARIO;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['ID_HORARIO'] == $horario){
+                    $id_horario = $fila['ID_HORARIO'];
+                    break;
+                }
+            }
+            // obtener servicio
+            $query = mysqli_query($conn, "SELECT * FROM SERVICIO;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['NOMBRESERVICIO'] == $servicio){
+                    $id_servicio = $fila['ID_SERVICIO'];
+                    $precio = $fila['PRECIOSERVICIO'];
+                    break;
+                }
+            }
+             //SACO CLIENTE Y FECHA
+            date_default_timezone_set('America/Costa_Rica');
+            //hago un datetime en fechacom
+            $fechacom = new DateTime($fecha);
+            //le defino el formato de la base de datos
+            $date =  $fechacom->format('Y-m-d');
+            $query = mysqli_query($conn, "SELECT * FROM CITA WHERE FECHA = '$date' AND ID_HORARIO = '$id_horario' AND ID_BARBERO = '$id_barbero';"); 
+            if(mysqli_num_rows($query) > 0){
+                echo "Ya hay cita con este barbero en ese horario"; 
+            }
+            else{
+                $query = mysqli_query($conn, "INSERT INTO CITA (ID_BARBERO, ID_HORARIO, ID_SERVICIO, PRECIO, CEDULA, FECHA) 
+                        VALUES ('$id_barbero', '$id_horario', '$id_servicio', '$precio', '$cliente', '$date');");
                 echo "Guardado";
             }
         }

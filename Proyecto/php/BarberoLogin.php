@@ -47,7 +47,7 @@
     	</script>
 
 		<!-- nuestros estilos-->
-        <link rel="stylesheet" type="text/css" href="../css/EstilosLogin.css">
+        <link rel="stylesheet" type="text/css" href="../css/estilosLogin.css">
         <link rel="stylesheet" type="text/css" href="../css/custom.css">
 
 		<!-- font awesome library -->
@@ -138,11 +138,11 @@
         </div>
                    
     <!-- javascript nuestro -->
-	<script src="../js/JavaScript.js"></script>
+	<script src="../js/javascript.js"></script>
 
     <script>
         function openProductos() {
-            window.location.replace("verProductos.php");
+            window.location.replace("verproductos.php");
             return false;
         }
     </script>

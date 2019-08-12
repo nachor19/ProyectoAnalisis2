@@ -45,7 +45,7 @@ function guardarCliente(llave){
     
     if(validarFormRegistro()){
         $.ajax({
-            url: '../php/ManejoCliente.php',
+            url: '../php/manejocliente.php',
             method: 'POST',
             dataType: 'text', 
             data: {
@@ -68,8 +68,60 @@ function guardarCliente(llave){
                     $("#cedulaErr").html("La cedula ingresada ya existe");
                 }
                 else if(respuesta == "Guardado"){
-                    $("#registrarseModal").modal("toggle");
-                    window.location.href = '../php/ClienteLogin.php';
+                    $("#registrarseModal").modal("toggle");  
+                    window.location.href = '../php/clientelogin.php';
+                }
+                else{
+                    $("#resultados").addClass("alert alert-danger");
+                    $("#resultados").html(respuesta);
+                    $("#resultados").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}
+
+function guardarClienteA(llave){
+    var cedula = $("#cedula");
+    var nombre = $("#nombre");
+    var primerApellido = $("#primerApellido");
+    var segundoApellido = $("#segundoApellido");
+    var telefono = $("#telefono");
+    var email = $("#email");
+    var pwd = $("#pwd");
+    
+    if(validarFormRegistro()){
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                cedula: cedula.val(),
+                nombre: nombre.val(),
+                primerApellido: primerApellido.val(),
+                segundoApellido: segundoApellido.val(),
+                telefono: telefono.val(),
+                email: email.val(),
+                pwd: pwd.val()
+            }, success: function(respuesta){
+                if (respuesta == "email") {
+                    $("#email").css('border', '1px solid red');
+                    $("#emailErr").addClass("alert alert-danger");
+                    $("#emailErr").html("El correo ingresado ya existe");
+                } else if (respuesta == "id") {
+                    $("#cedula").css('border', '1px solid red');
+                    $("#cedulaErr").addClass("alert alert-danger");
+                    $("#cedulaErr").html("La cedula ingresada ya existe");
+                }
+                else if(respuesta == "Guardado"){
+                    cargarTablaClientes();
+                    $("#agregarClienteModal").modal("hide");  
+                    $("#modalSuccess").modal('show');
                 }
                 else{
                     $("#resultados").addClass("alert alert-danger");
@@ -223,7 +275,7 @@ function iniciarSesion(llave){
 
     if(validarFormSesion()){
         $.ajax({
-            url: '../php/ManejoCliente.php',
+            url: '../php/manejocliente.php',
             method: 'POST',
             dataType: 'text', 
             data: {
@@ -242,15 +294,14 @@ function iniciarSesion(llave){
                 } if (respuesta == "Bienvenido cliente") {
                     $("#iniciarSesionModal").modal("toggle");
 
-                    window.location.href = '../php/ClienteLogin.php';
+                    window.location.href = '../php/clientelogin.php';
                 } if (respuesta == "Bienvenido admin") {
                     $("#iniciarSesionModal").modal("toggle");
 
-                    window.location.href = '../php/AdminLogin.php';
+                    window.location.href = '../php/adminlogin.php';
                 } if (respuesta == "Bienvenido barbero") {
                     $("#iniciarSesionModal").modal("toggle");
-
-                    window.location.href = '../php/BarberoLogin.php';
+                    window.location.href = '../php/barberologin.php';
                 }
             }
         });
@@ -299,7 +350,7 @@ function validarFormSesion(){
 // funcoon que se encarga de cerrar la sesion
 function cerrarSesion(llave){
     $.ajax({
-        url: '../php/manejoCliente.php',
+        url: '../php/manejocliente.php',
         method: 'POST',
         dataType: 'text', 
         data: {
@@ -345,7 +396,7 @@ function cambiarPwd(llave){
     }
     else{
         $.ajax({
-            url: '../php/manejoCliente.php',
+            url: '../php/manejocliente.php',
             method: 'POST',
             dataType: 'text', 
             data: {
@@ -391,7 +442,7 @@ function cambiarCorreo(llave){
     }
     else{
         $.ajax({
-            url: '../php/manejoCliente.php',
+            url: '../php/manejocliente.php',
             method: 'POST',
             dataType: 'text', 
             data: {
@@ -431,7 +482,7 @@ var cargarTabla = function(){
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
         },
          "ajax":{
-            url: '../php/manejoCitas.php',
+            url: '../php/manejocitas.php',
             method: 'POST',
             data: {
                 llave: 'cargarTabla'
@@ -449,15 +500,13 @@ var cargarTabla = function(){
 var cargarTablaClientes = function(){
     var tabla = $("#tabla_clientes").DataTable({
         responsive: true,
-        select: {
-            style: 'single'
-        },
+        select: true,
         "destroy": true,
         "language": {
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
         },
          "ajax":{
-            url: '../php/manejoAdmin.php',
+            url: '../php/manejoadmin.php',
             method: 'POST',
             data: {
                 llave: 'cargarTablaClientes'
@@ -468,10 +517,16 @@ var cargarTablaClientes = function(){
             {"data":"nombre"},
             {"data":"apellidos"},
             {"data":"correo"},
-            {"data":"telefono"}
-        ]
+            {"data":"telefono"},
+        ],
     });
+        tabla
+        .on( 'select', function ( e, dt, type, indexes ) {
+            var rowData = table.rows( indexes ).data().toArray();
+            var hola = rowData[1]; 
+        });
 }
+
 var cargarTablaCitas = function(){
     var tabla = $("#tabla_citas").DataTable({
         responsive: true,
@@ -480,7 +535,7 @@ var cargarTablaCitas = function(){
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
         },
          "ajax":{
-            url: '../php/manejoAdmin.php',
+            url: '../php/manejoadmin.php',
             method: 'POST',
             data: {
                 llave: 'cargarTablaCitas'
@@ -507,7 +562,7 @@ var cargarTablaBarberos = function(){
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
         },
          "ajax":{
-            url: '../php/manejoAdmin.php',
+            url: '../php/manejoadmin.php',
             method: 'POST',
             data: {
                 llave: 'cargarTablaBarberos'
@@ -530,7 +585,7 @@ var cargarTablaProductos = function(){
             "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
         },
          "ajax":{
-            url: '../php/manejoAdmin.php',
+            url: '../php/manejoadmin.php',
             method: 'POST',
             data: {
                 llave: 'cargarTablaProductos'
@@ -551,8 +606,13 @@ function cargarTablas(){
     cargarTablaCitas();
     cargarTablaBarberos();
     cargarTablaProductos();
+    desyset();
 }
 
+function modalCambio(){
+    $("#agregarCitaModal").modal("toggle");
+    $('#agregarClienteModal').modal('show');
+}
 // funcion para SACAR CITA
 function sacarCita(llave){
     var barbero = $("#barbero");
@@ -561,11 +621,12 @@ function sacarCita(llave){
     var fecha = $("#fecha");
     
     $.ajax({
-        url: '../php/manejoCitas.php',
+        url: '../php/manejocitas.php',
         method: 'POST',
         dataType: 'text', 
         data: {
             llave: llave,
+
             barbero: barbero.val(),
             servicio: servicio.val(),
             horario: horario.val(),
@@ -588,6 +649,41 @@ function sacarCita(llave){
         }
     });
 }  
+function sacarCitaAdmin(llave){
+    var barbero = $("#barbero");
+    var servicio = $("#servicio");
+    var horario = $("#horario");
+    var fecha = $("#fecha");
+    var cliente = $("#cliente")
+    $.ajax({
+        url: '../php/manejocitas.php',
+        method: 'POST',
+        dataType: 'text', 
+        data: {
+            llave: llave,
+            cliente: cliente.val(),
+            barbero: barbero.val(),
+            servicio: servicio.val(),
+            horario: horario.val(),
+            fecha: fecha.val()
+        }, success: function(respuesta){
+            if(respuesta == "Guardado"){
+                cargarTabla();
+                $("#sacarCitaModal").modal("hide");
+                $("#modalSuccess").modal('show');
+            }
+            else{
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+        }
+    });
+}  
 // funcion para ver si hay citas disponibles
 function consultarCita(llave){
     var barbero = $("#barbero");
@@ -595,7 +691,7 @@ function consultarCita(llave){
     var fecha = $("#fecha");
     
     $.ajax({
-        url: '../php/manejoCitas.php',
+        url: '../php/manejocitas.php',
         method: 'POST',
         dataType: 'text', 
         data: {
@@ -625,13 +721,35 @@ function consultarCita(llave){
         }
     });
 }
+function showAll(llave){
+    var cedula = $("#cliente");
+    var datos;
+    var array;
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                cedula: cedula.val()
+            },
+            success: function(datos){
+                array = JSON.parse(datos);
+                document.getElementById("nombreCli").value = array[0];
+                document.getElementById("Apellido1Cli").value = array[1];
+                document.getElementById("Apellido2Cli").value = array[2];
+            }
+        });
+        
+
+}
 function volver(){
     $("#verCitaModal").modal("toggle");
-    window.location.href = '../html/Index.html#sacarCita';
+    window.location.href = '../html/index.html#sacarCita';
      $(window).load(function(){        
    $('#myModal').modal('show');
     }); 
 }
 function verCitas(){
-    window.location.href = '../php/VerCitas.php';
+    window.location.href = '../php/vercitas.php';
 }

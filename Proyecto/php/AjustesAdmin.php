@@ -26,7 +26,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet"> 
 
 		<!-- nuestros estilos-->
-		<link rel="stylesheet" type="text/css" href="../css/estilosPerfil.css">
+		<link rel="stylesheet" type="text/css" href="../css/estilosperfil.css">
 
 		<!-- font awesome library -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -127,7 +127,7 @@
         <!-- Fin de modal para eliminar cuenta -->
 
 		<!-- javascript nuestro -->
-		<script src="../js/JavaScript.js"></script>
+		<script src="../js/javascript.js"></script>
 		
 	</body>
 </html>

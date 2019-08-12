@@ -65,7 +65,7 @@
 							<span class="validity"></span>
 						</div>
 						<div>
-							<a href="http://localhost/ProyectoAnalisis2/Proyecto/User/html/index.html">Registrarse</a>
+							<a href="http://localhost/ProyectoAnalisis2/Proyecto/html/index.html">Registrarse</a>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -75,8 +75,7 @@
            </div>
       </div>
    </div>
-</div>
 		<!-- javascript nuestro -->
-		<script src="../js/JavaScript.js"></script>
+		<script src="../js/javascript.js"></script>
 </body>
 </html>

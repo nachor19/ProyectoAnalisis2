@@ -103,6 +103,32 @@
                 return;
             }
         }
+            if($_POST['llave'] == "guardarCliente"){
+            $cedula = $_POST['cedula'];
+            $nombre = $_POST['nombre'];
+            $primerApellido = $_POST['primerApellido'];
+            $segundoApellido = $_POST['segundoApellido'];
+            $telefono = $_POST['telefono'];
+            $email = $_POST['email'];
+            $hashed_pwd = password_hash(trim($_POST['pwd']), PASSWORD_DEFAULT);
+
+            // verificar si ese correo aun no exite
+            $sql = mysqli_query($conn, "SELECT * FROM usuario WHERE emailc = '$email';");
+            $sql2 = mysqli_query($conn, "SELECT * FROM usuario WHERE cedula = '$cedula';");
+
+            if (mysqli_num_rows($sql) > 0) {
+                echo "email";
+                return;
+            }else if(mysqli_num_rows($sql2) > 0){
+                echo "id";
+                return;
+            }
+            else{
+                // insertar los datos
+                $query = mysqli_query($conn, "INSERT INTO usuario (cedula, nombre, primerapellido, segundoapellido, emailc, contrasenna, telefono, rol) VALUES ('$cedula', '$nombre', '$primerApellido', '$segundoApellido', '$email', '$hashed_pwd', '$telefono', 1);");
+                echo "Guardado";
+                }
+            }
 
         if($_POST['llave'] == "sacarCita"){
             $barbero = $_POST['barbero'];
@@ -154,45 +180,15 @@
                 echo "Guardado";
             }
         }
-        if($_POST['llave'] == "consulta"){
-            $barbero = $_POST['barbero'];
-            $horario = $_POST['horario'];
-            $fecha = $_POST['fecha'];           
+        if($_POST['llave'] == "cargarDatos"){
+            $cedula = $_POST['cedula'];
+       
             // obtener barbero
-            $query = mysqli_query($conn, "SELECT * FROM BARBERO;");
-            while($fila = mysqli_fetch_array($query)){
-                if($fila['NOMBREB'] == $barbero){
-                    $id_barbero = $fila['ID_BARBERO'];
-                    break;
-                }
-            }
-            $query = mysqli_query($conn, "SELECT * FROM HORARIO;");
-            while($fila = mysqli_fetch_array($query)){
-                if($fila['ID_HORARIO'] == $horario){
-                    $id_horario = $fila['ID_HORARIO'];
-                    break;
-                }
-            }
-             //SACO CLIENTE Y FECHA
-            date_default_timezone_set('America/Costa_Rica');
-            //hago un datetime en fechacom
-            $fechacom = new DateTime($fecha);
-            //le defino el formato de la base de datos
-            $date =  $fechacom->format('Y-m-d');
-            //fecha de hoy
-            $fecha2 = date("Y-m-d");
-            //hora de hoy
-            $hora = date('H:i:s');
-            $query = mysqli_query($conn, "SELECT * FROM CITA WHERE FECHA = '$date' AND ID_HORARIO = '$id_horario' AND ID_BARBERO = '$id_barbero';"); 
-            if(mysqli_num_rows($query) > 0){
-                echo "Ya hay cita con este barbero en ese horario"; 
-            }
-            else{
-                echo "Sí hay espacio disponible para el horario consultado.<br> Registrese para reservar!";
-            }
-        }
-
-    }                           
+            $query = mysqli_query($conn, "SELECT NOMBRE, PRIMERAPELLIDO, SEGUNDOAPELLIDO FROM USUARIO WHERE CEDULA = '$cedula';");
+            $array = mysqli_fetch_array($query);
+            echo json_encode($array);
+    }      
+    }                     
      $conn->close();
 
 

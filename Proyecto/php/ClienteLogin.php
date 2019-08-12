@@ -47,7 +47,7 @@
     	</script>
 
 		<!-- nuestros estilos-->
-		<link rel="stylesheet" type="text/css" href="../css/EstilosLogin.css">
+		<link rel="stylesheet" type="text/css" href="../css/estiloslogin.css">
 
 		<!-- font awesome library -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -217,11 +217,11 @@
 		</div>
 
 		<!-- javascript nuestro -->
-		<script src="../js/JavaScript.js"></script>
+		<script src="../js/javascript.js"></script>
 
 		<script>
 			function openProductos() {
-				window.location.replace("verProductos.php");
+				window.location.replace("verproductos.php");
 				return false;
 			}
 		</script>

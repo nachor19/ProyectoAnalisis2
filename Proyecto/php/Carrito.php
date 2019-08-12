@@ -82,7 +82,7 @@
             $cart_count = count(array_keys($_SESSION["shopping_cart"]));
         ?>
             <div class="cart_div pull-left" style="padding: 0px 40px;">
-                <a href="verProductos.php">Regresar <span class="fa fa-arrow-left"></span></a>
+                <a href="verproductos.php">Regresar <span class="fa fa-arrow-left"></span></a>
             </div>
 
             <div class="pull-right">
