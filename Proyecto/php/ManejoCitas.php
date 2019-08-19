@@ -88,7 +88,9 @@
             $servicio = $_POST['servicio'];
             $horario = $_POST['horario'];
             $fecha = $_POST['fecha'];  
-            $cliente = $_POST['cliente'];         
+            $cliente = $_POST['cliente']; 
+            $desc = $_POST['desc'];
+            $id_usuario = $_POST['cliente'];         
             // obtener barbero
             $query = mysqli_query($conn, "SELECT * FROM USUARIO WHERE ROL = 3;");
             while($fila = mysqli_fetch_array($query)){
@@ -124,8 +126,8 @@
                 echo "Ya hay cita con este barbero en ese horario"; 
             }
             else{
-                $query = mysqli_query($conn, "INSERT INTO CITA (ID_BARBERO, ID_HORARIO, ID_SERVICIO, PRECIO, CEDULA, FECHA) 
-                        VALUES ('$id_barbero', '$id_horario', '$id_servicio', '$precio', '$cliente', '$date');");
+                $query = mysqli_query($conn, "INSERT INTO CITA (ID_BARBERO, ID_HORARIO, ID_SERVICIO, DESCRIPCION, ESTADO, PRECIO, CEDULA, FECHA) 
+                        VALUES ('$id_barbero', '$id_horario', '$id_servicio', '$desc', 'PENDIENTE', '$precio', '$id_usuario', '$date');");
                 echo "Guardado";
             }
         }
