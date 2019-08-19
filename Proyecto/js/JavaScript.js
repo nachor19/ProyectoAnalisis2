@@ -1766,9 +1766,9 @@ function sacarCitaAdmin(llave){
                 $('#modalSuccessCita').modal('show');
             }
             else{
-                $("#resultados").addClass("alert alert-danger");
-                $("#resultados").html(respuesta);
-                $("#resultados").delay(5000).fadeOut(function(){
+                $("#resultadosCita").addClass("alert alert-danger");
+                $("#resultadosCita").html(respuesta);
+                $("#resultadosCita").delay(5000).fadeOut(function(){
                     $(this).removeClass("alert alert-danger");
                     $(this).html("");
                     $(this).css("display", "");

@@ -445,7 +445,7 @@
             <h5 class="modal-title text-dark">Actualizar cita</h5>
             </div>
             <div class="modal-body">
-                        <div id="resultados"></div>
+                        <div id="resultadosCita" style="color:black"></div>
                         <div class="form-group" id="idCitaUpErr">
                             <label for="idCitaUp" class="text-dark"># Cita:</label>
                             <input autofocus autocomplete="off" type="text" class="form-control" id="idCitaUp" name="idCitaUp" readonly="readonly" required>
