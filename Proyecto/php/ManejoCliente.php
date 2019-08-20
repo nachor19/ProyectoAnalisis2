@@ -46,8 +46,78 @@
                 echo "Guardado";
                 }
             }
+            if($_POST['llave'] == "realizarActualizacionCita"){
+            $id_cita = $_POST['id_cita'];
+            $barbero = $_POST['barbero'];
+            $horario = $_POST['horario'];
+            $servicio = $_POST['servicio'];
+            $hora = $_POST['hora']; 
 
+            $query = mysqli_query($conn, "SELECT * FROM USUARIO WHERE rol = 3;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['NOMBRE'] == $barbero){
+                    $id_barbero = $fila['CEDULA'];
+                    break;
+                }
+            }
+            $query = mysqli_query($conn, "SELECT * FROM HORARIO;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['ID_HORARIO'] == $horario){
+                    $idhor = $fila['ID_HORARIO'];
+                    $id = explode(":", $idhor);
+                    $id_horario = $id[0]."0000";
+                    break;
+                }
+            }
+            // obtener servicio
+            $query = mysqli_query($conn, "SELECT * FROM SERVICIO;");
+            while($fila = mysqli_fetch_array($query)){
+                if($fila['NOMBRESERVICIO'] == $servicio){
+                    $id_servicio = $fila['ID_SERVICIO'];
+                    break;
+                }
+            }
+            $query2 = mysqli_query($conn, "SELECT FECHA FROM CITA WHERE ID_CITA = '$id_cita'");
+            $resp = mysqli_fetch_array($query2);
+            $fecha = $resp['FECHA'];
+            $fecha = strtotime($fecha);
+             //SACO CLIENTE Y FECHA
+            date_default_timezone_set('America/Costa_Rica');
+            //hago un datetime en fechacom
+            $fechacom = new DateTime($hora);
+            //le defino el formato de la base de datos
+            $date =  strtotime($fechacom->format('Y-m-d'));
+            $hoy = strtotime(date('Y-m-d'));
 
+            if($hoy >= $fecha){
+                echo "No se permite modificar citas con fechas anteriores o igual al dia hoy";
+                return;
+            }else{
+                    $query = mysqli_query($conn, "SELECT * FROM CITA WHERE FECHA = '$date' AND ID_HORARIO = '$id_horario' AND ID_BARBERO = '$id_barbero' AND ID_CITA = 'id_cita';"); 
+                    if(mysqli_num_rows($query) > 0){
+                        echo "Ya hay cita con este barbero en ese horario"; 
+                    }
+                    else if(mysqli_query($conn, "CALL SP_ACTUALIZARCITA('$id_cita', '$id_barbero', '$id_horario', '$id_servicio', '$date');")){
+                        echo "Se actualizo";
+                    }        
+                    else{
+                        echo "No se actualizo";
+                    }
+            }
+        }
+
+            if($_POST['llave'] == "eliminarCita"){
+                $id_cita = $_POST['id'];
+                $query = mysqli_query($conn, "DELETE FROM CITA WHERE ID_CITA = '$id_cita';");
+                    echo 'Cita eliminada exitosamente.';
+            }
+            if($_POST['llave'] == "obtenerCita"){
+            $id_cita = $_POST['id'];
+            $query = mysqli_query($conn, "CALL SP_DATOSACTUALIZARCITA('$id_cita');");
+            $array = mysqli_fetch_array($query);
+            $array[4] = date("m/d/Y", strtotime($array[4]));
+            echo json_encode($array);
+            }
             //si es iniciar sesion
             if($_POST['llave'] == "iniciarSesion"){
             $email = $_POST['email'];

@@ -113,7 +113,7 @@
         <hr/>
             
         <div id="tabs">
-          <ul>
+          <ul class="nav nav-tabs responsive">
             <li><a href="#tabs-1">Clientes</a></li>
             <li><a href="#tabs-2">Citas</a></li>
             <li><a href="#tabs-3">Barberos</a></li>
@@ -210,6 +210,10 @@
                 </tbody>
             </table>
           </div>
+    <!-- pie de pagina -->
+    <footer>
+      <p style="text-align: center">Diseño y desarrollo PROAN&copy; 2019</p>
+    </footer>
 
        <!-- Modal para cliente -->
         <div class="modal fade bg-dark text-white" id="agregarClienteModal" tabindex="-1" role="dialog" aria-labelledby="agregarClienteModal" aria-hidden="true">
@@ -491,7 +495,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark" data-dismiss="modal">Volver</button>
-                        <button type="button" class="btn btn-success" onclick="realizarActualizacionCita('realizarActualizacionCita')">Sacar cita</button>
+                        <button type="button" class="btn btn-success" onclick="realizarActualizacionCita('realizarActualizacionCita')">Actualizar cita</button>
                     </div>
            </div>
       </div>

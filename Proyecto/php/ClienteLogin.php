@@ -32,6 +32,7 @@
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap4.min.css">
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -43,6 +44,7 @@
 		<script>
     	 $( function() {
       	 $( "#fecha" ).datepicker({ minDate: setFecha()});
+    	 $( "#fechaUp" ).datepicker({ minDate: setFecha()});
     	 } );
     	</script>
 
@@ -96,6 +98,7 @@
 					</div>
 				</div>				
 				<div>
+					<div id="miResultadoC"></div>
 					<table class="table table-hover dt-responsive nowrap" style="width:100%" id="tabla_citas">
 						<thead>
 							<th>Fecha</th>
@@ -103,6 +106,7 @@
 							<th>Barbero</th>
 							<th>Servicio</th>
 							<th>Precio</th>
+							<th></th>
 						</thead>
 						<tbody>
 						</tbody>
@@ -116,6 +120,10 @@
 			<div class="informacion">
 				<h3>&#x1F1E8;&#x1F1F7; Nuestra historia &#x1F1E8;&#x1F1F7;</h3>
 				<p>
+					Men’s Barbershop nace en el año 2015 como una barbería alternativa, moderna y familiar para el hombre de hoy.<br>
+					Es un espacio para que una “tarea” constante se vuelva una experiencia agradable; la cual, ya sea por medio de videos, tablets, buena música, saborear un shot con sabor original y con productos de primera calidad, lo dejen con ganas de volver.<br>
+					Los niños, adolescentes y adultos que nos visiten se sentirán cómodos y bien atendidos en un lugar agradable, limpio, de confianza y con barberos calificados tanto en cortes tradicionales como modernos.<br>
+					Entendemos las múltiples ocupaciones del hombre, por eso ofrecemos un horario amplio.
 				</p>
 			</div>
 			
@@ -123,16 +131,12 @@
 			<div id="contacto"></div>
 			<div class="informacion">
 				<h3>¡Contáctenos!</h3>
-				<p>Escribanos al correo electronico.</p>
+				<p>Contáctenos al número teléfonico 4030-12-06<!-- numero de telefono -->.</p>
 				<hr id="separacion"/>
 				<h5>Síganos en nuestras redes</h5>
 				<div id="redes_sociales" style="text-align: center; font-size: 20px">
 					<a href="https://www.facebook.com/BarberiaMAES/?ref=br_rs" class="fa fa-facebook"></a>
-					<a href="#" class="fa fa-google-plus"></a>
-					<a href="#" class="fa fa-instagram"></a>
-					<a href="#" class="fa fa-snapchat"></a>
-					<a href="#" class="fa fa-twitter"></a>
-					<a href="#" class="fa fa-pinterest"></a>
+					<a href="https://www.instagram.com/barberiamaes/?hl=es-la" class="fa fa-instagram"></a>
 				</div>
 			</div>
 		</div>
@@ -141,7 +145,7 @@
 
 		<!-- pie de pagina -->
 		<footer>
-			<p style="text-align: center">Diseño y desarrollo por</p>
+			<p style="text-align: center">Diseño y desarrollo por PROAN</p>
 		</footer>
 
 		<!-- Modal para sacar cita -->
@@ -215,6 +219,71 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="modal fade bg-dark text-white" data-keyboard="false" id="sacarCitaModalUp" tabindex="-1" role="dialog" aria-labelledby="sacarCitaModalUp" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+           <div class="modal-header">
+            <h5 class="modal-title text-dark">Actualizar cita</h5>
+            </div>
+            <div class="modal-body">
+                        <div id="resultadosCita" style="color:black"></div>
+                        <div class="form-group">
+                            <label for="barberoUp">Barbero: </label>
+                            <select class="form-control" id="barberoUp" name="barberoUp" required>
+                                <?php
+                                    $datos = mysqli_query($conn, "SELECT NOMBRE FROM usuario WHERE ROL = 3;");
+                                    while($fila = mysqli_fetch_array($datos)){
+                                        echo "<option>" . $fila['NOMBRE']. "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="horarioUp">Horario: </label>
+                            <select class="form-control" id="horarioUp" name="horarioUp" required>
+                                <?php
+                                    $datos = mysqli_query($conn, "SELECT id_horario FROM horario;");
+                                    while($fila = mysqli_fetch_array($datos)){
+                                        echo "<option>" . $fila['id_horario']. "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="servicioUp">Servicio: </label>
+                            <select class="form-control" id="servicioUp" name="servicioUp" required>
+                                <?php
+                                    $datos = mysqli_query($conn, "SELECT NOMBRESERVICIO FROM servicio;");
+                                    while($fila = mysqli_fetch_array($datos)){
+                                        echo "<option>" . $fila['NOMBRESERVICIO']. "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                        <label for="fechaUp">Fecha: </label><br>
+                            <input type="text" name="fechaUp" id="fechaUp" required>
+                            <span class="validity"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Volver</button>
+                        <button type="button" class="btn btn-success" onclick="realizarActualizacionCitaC('realizarActualizacionCita')">Actualizar cita</button>
+                    </div>
+           </div>
+      </div>
+   </div>
+           <div class="modal fade" id="modalSuccessUpCita" tabindex="-1" role="dialog" aria-labelledby="modalSuccessUpCita" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-dark">Cita actualizada satisfactoriamente!</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 		<!-- javascript nuestro -->
 		<script src="../js/javascript.js"></script>

@@ -1,6 +1,7 @@
 $(document).ready(function(){
     controlarDesplazamiento();
     controlarNavbar();
+
 });
 
 var controlarNavbar = function(){
@@ -33,6 +34,397 @@ var controlarDesplazamiento = function(){
     });
 }
 
+function guardarClienteB(llave){
+    var cedula = $("#cedula");
+    var nombre = $("#nombre");
+    var primerApellido = $("#primerApellido");
+    var segundoApellido = $("#segundoApellido");
+    var telefono = $("#telefono");
+    var email = $("#email");
+    var pwd = $("#pwd");
+    
+    if(validarFormRegistro()){
+        $.ajax({
+            url: '../php/manejobarbero.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                cedula: cedula.val(),
+                nombre: nombre.val(),
+                primerApellido: primerApellido.val(),
+                segundoApellido: segundoApellido.val(),
+                telefono: telefono.val(),
+                email: email.val(),
+                pwd: pwd.val()
+            }, success: function(respuesta){
+                if (respuesta == "email") {
+                    $("#email").css('border', '1px solid red');
+                    $("#emailErr").addClass("alert alert-danger");
+                    $("#emailErr").html("El correo ingresado ya existe");
+                } else if (respuesta == "id") {
+                    $("#cedula").css('border', '1px solid red');
+                    $("#cedulaErr").addClass("alert alert-danger");
+                    $("#cedulaErr").html("La cedula ingresada ya existe");
+                }
+                else if(respuesta == "Guardado"){
+                    cargarTablaClientes();
+                    jQuery.noConflict();
+                    $('#agregarClienteModal').modal('hide');
+                    $('#modalSuccess').modal('show');
+                }
+                else{
+                    $("#resultados").addClass("alert alert-danger");
+                    $("#resultados").html(respuesta);
+                    $("#resultados").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}
+function sacarCitaBarbero(llave){
+    var servicio = $("#servicio");
+    var horario = $("#horario");
+    var fecha = $("#fecha");
+    var cliente = $("#cliente");
+    var desc = $("#descUp");
+    $.ajax({
+        url: '../php/manejocitas.php',
+        method: 'POST',
+        dataType: 'text', 
+        data: {
+            llave: llave,
+            cliente: cliente.val(),
+            servicio: servicio.val(),
+            horario: horario.val(),
+            fecha: fecha.val(),
+            desc: desc.val()
+        }, success: function(respuesta){
+            if(respuesta == "Guardado"){
+                cargarTablas();
+                jQuery.noConflict();
+                $('#sacarCitaModal').modal('hide');
+                $('#modalSuccessCita').modal('show');
+            }
+            else{
+                $("#resultadosCita").addClass("alert alert-danger");
+                $("#resultadosCita").html(respuesta);
+                $("#resultadosCita").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+        }
+    });
+}
+function actualizarClienteB(id){
+        var datos;
+    var array;
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: 'obtenerCliente',
+                id: id
+            },
+            success: function(datos){
+                array = jQuery.parseJSON(datos);
+                document.getElementById("nombreUp").value = array[0];
+                document.getElementById("primerApellidoUp").value = array[1];
+                document.getElementById("segundoApellidoUp").value = array[2];
+                document.getElementById("emailUp").value = array[3];
+                document.getElementById("telefonoUp").value = array[4];
+                document.getElementById("cedulaUp").value = array[6];
+                document.getElementById("cedulaUp").readOnly = true;
+            }
+        });
+         jQuery.noConflict();
+        $('#actualizarClienteModal').modal('show');
+}
+function eliminarClienteB(id){
+    var resp = confirm("Seguro que desea eliminar al cliente "+id);
+    if(resp == true){
+         $.ajax({
+                url: '../php/manejoadmin.php',
+                method: 'POST',
+                dataType: 'text', 
+                data: {
+                    llave: 'eliminarCliente',
+                    id: id
+                }, success: function(respuesta){
+                    if(respuesta == "Cliente eliminado exitosamente."){
+                        cargarTablas();
+                        $('#miResultado').addClass("alert alert-success");
+                        $('#miResultado').html(respuesta);
+                        $('#miResultado').delay(5000).fadeOut(function(){
+                            $(this).removeClass("alert alert-success");
+                            $(this).html("");
+                            $(this).css("display", "");
+                        });
+                    }
+                    else{
+                        $("#miResultado").addClass("alert alert-danger");
+                        $("#miResultado").html(respuesta);
+                        $("#miResultado").delay(5000).fadeOut(function(){
+                            $(this).removeClass("alert alert-danger");
+                            $(this).html("");
+                            $(this).css("display", "");
+                        });
+                    }
+                }
+            });
+    }else{
+        cargarTablas();
+    }
+}
+function actualizarCitaB(id){
+    var datos;
+    var array;
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: 'obtenerCita',
+                id: id
+            },
+            success: function(datos){
+                array = jQuery.parseJSON(datos);
+                $('#idCitaUp').val(array[0]);
+                $('#barberoUp').val(array[1]);
+                $('#horarioUp').val(array[2]);                
+                $('#servicioUp').val(array[3]);
+                $('#fechaUp').val(array[4]);
+            }
+        });
+         jQuery.noConflict();
+        $('#sacarCitaModalUp').modal('show');
+}
+function realizarActualizacionB(llave){
+ var cedula = $("#cedulaUp");
+    var nombre = $("#nombreUp");
+    var primerApellido = $("#primerApellidoUp");
+    var segundoApellido = $("#segundoApellidoUp");
+    var telefono = $("#telefonoUp");
+    var email = $("#emailUp");
+    var rol = $("#rolUp");
+    
+    if(validarFromActualizacion()){
+        $.ajax({
+            url: '../php/manejobarbero.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                cedula: cedula.val(),
+                nombre: nombre.val(),
+                primerApellido: primerApellido.val(),
+                segundoApellido: segundoApellido.val(),
+                telefono: telefono.val(),
+                email: email.val(),
+                rol: rol.val()
+            }, success: function(respuesta){
+                if (respuesta == "email") {
+                    $("#emailUp").css('border', '1px solid red');
+                    $("#emailUpErr").addClass("alert alert-danger");
+                    $("#emailUpErr").html("El correo ingresado ya existe");
+                }
+                else if (respuesta == "No se pudo actualizar"){
+                    $("#emailUp").css('border', '1px solid red');
+                    $("#emailUpErr").addClass("alert alert-danger");
+                    $("#emailUpErr").html(respuesta);
+                }
+                else if(respuesta == "Cliente actualizado"){
+                 jQuery.noConflict();
+                $('#actualizarClienteModal').modal('hide');
+                $('#modalSuccessUp').modal('show');
+                cargarTablas();
+                }
+                else{
+                    $("#miResp").addClass("alert alert-danger");
+                    $("#miResp").html('No se pudo actualizar.');
+                    $("#miResp").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}
+function realizarActualizacionCitaB(llave){
+    var id_cita = $('#idCitaUp')
+    var horario = $("#horarioUp");
+    var servicio = $("#servicioUp");
+    var hora = $("#fechaUp");
+    
+        $.ajax({
+            url: '../php/manejobarbero.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                id_cita: id_cita.val(),
+                horario: horario.val(),
+                servicio: servicio.val(),
+                hora: hora.val()
+            }, success: function(respuesta){
+            if(respuesta == "Se actualizo"){
+                jQuery.noConflict();
+                $('#sacarCitaModalUp').modal('hide');
+                $('#modalSuccessUpCita').modal('show');
+            }
+            else{
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+            }
+        });
+}
+
+function realizarActualizacionPerfil(llave){
+     var cedula = $("#cedulaBarbUp");
+    var nombre = $("#nombreBarbUp");
+    var primerApellido = $("#primerApellidoBarbUp");
+    var segundoApellido = $("#segundoApellidoBarbUp");
+    var telefono = $("#telefonoBarbUp");
+    var email = $("#emailBarbUp");
+    var rol = $("#rolBarbUp");
+    
+    if(validarFromActualizacionBarb()){
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                cedula: cedula.val(),
+                nombre: nombre.val(),
+                primerApellido: primerApellido.val(),
+                segundoApellido: segundoApellido.val(),
+                telefono: telefono.val(),
+                email: email.val(),
+                rol: rol.val()
+            }, success: function(respuesta){
+                if (respuesta == "email") {
+                    $("#emailBarbUp").css('border', '1px solid red');
+                    $("#emailBarbUpErr").addClass("alert alert-danger");
+                    $("#emailBarbUpErr").html("El correo ingresado ya existe");
+                }
+                else if (respuesta == "No se pudo actualizar"){
+                    $("#emailBarbUp").css('border', '1px solid red');
+                    $("#emailBarbUpErr").addClass("alert alert-danger");
+                    $("#emailBarbUpErr").html(respuesta);
+                }
+                else if(respuesta == "Barbero actualizado"){
+                 jQuery.noConflict();
+                $('#actualizarBarberoModal').modal('hide');
+                $('#modalSuccessBarUp').modal('show');
+                }
+                else{
+                    $("#miRespB").addClass("alert alert-danger");
+                    $("#miRespB").html('No se pudo actualizar.');
+                    $("#miRespB").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+                        this.cargarTablaBarberos();
+    }
+}
+
+function registrarProductoB(llave){
+    var nombre = $("#nombreProd");
+    var desc = $("#descProd");
+    var precio = $("#precioProd");
+    var cant = $("#cantProd");
+    var img = $("#file");
+    if(validarFormRegistroProd()){
+        $.ajax({
+            url: '../php/manejobarbero.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                nombre: nombre.val(),
+                desc: desc.val(),
+                precio: precio.val(),
+                cant: cant.val(),
+                img: img.val()
+            }, success: function(respuesta){
+                 if(respuesta == "Guardado"){
+                    jQuery.noConflict();
+                    $('#agregarProductoModal').modal('hide');
+                    $('#modalSuccessProd').modal('show');
+                }
+                else{
+                    $("#miRespA").addClass("alert alert-danger");
+                    $("#miRespA").html(respuesta);
+                    $("#miRespA").delay(5000).fadeOut(function(){
+                        $(this).removeClass("alert alert-danger");
+                        $(this).html("");
+                        $(this).css("display", "");
+                    });
+                }
+            }
+        });
+    }
+}
+
+function realizarActualizacionPB(llave){
+    var id_prod = $('#idProdUp')
+    var nombre = $("#nombreProdUp");
+    var desc = $("#descProdUp");
+    var precio = $("#precioProdUp");
+    var cant = $("#cantProdUp");
+    var img = $("#fileUp");
+    
+        $.ajax({
+            url: '../php/manejoadmin.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                id_prod: id_prod.val(),
+                nombre: nombre.val(),
+                desc: desc.val(),
+                precio: precio.val(),
+                cant: cant.val(),
+                img: img.val()
+            }, success: function(respuesta){
+            if(respuesta == "Producto actualizado"){
+                jQuery.noConflict();
+                $('#actualizarProductoModal').modal('hide');
+                $('#modalSuccessProdUp').modal('show');
+                                cargarTablas();
+            }
+            else{
+                $("#miRespP").addClass("alert alert-danger");
+                $("#miRespP").html(respuesta);
+                $("#miRespP").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+            }
+        });
+}
 
 function guardarCliente(llave){
     var cedula = $("#cedula");
@@ -625,10 +1017,12 @@ function setFecha(){
     }   
    var date = mes+"/"+dia+"/"+ano;
     document.getElementById('fecha').setAttribute("value", date);
+    document.getElementById('fechaUp').setAttribute("value", date);
     return date;
 }
 function deshabilitar(){
     document.getElementById('fecha').setAttribute("readonly", 'readonly');
+    document.getElementById('fechaUp').setAttribute("readonly", 'readonly');
 }
 //para poder llamar 2 funciones en html
 function desyset(){
@@ -860,7 +1254,8 @@ var cargarTabla = function(){
             {"data":"hora_cita"},
             {"data":"barbero"},
             {"data":"servicio"},
-            {"data":"precio"}
+            {"data":"precio"},
+            {"data":"eliminar"},
         ]
     });
 }
@@ -947,6 +1342,31 @@ var cargarTablaBarberos = function(){
         ]
     });
 }
+var cargarTablaBarberosB = function(){
+    var tabla = $("#tabla_barberos").DataTable({
+        responsive: true,
+        "destroy": true,
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+        },
+         "ajax":{
+            url: '../php/manejobarbero.php',
+            method: 'POST',
+            data: {
+                llave: 'cargarTablaBarberos'
+            }
+        },
+        "columns": [
+            {"data":"cedula"},
+            {"data":"nombre"},
+            {"data":"apellidos"},
+            {"data":"correo"},
+            {"data":"telefono"},
+            {"data":"actualizar"}
+
+        ]
+    });
+}
 var cargarTablaProductos = function(){
     var tabla = $("#tabla_productos").DataTable({
         responsive: true,
@@ -1005,6 +1425,26 @@ function cargarTablas(){
     cargarTablaProductos();
     cargarTablaAdmins();
     desyset();
+    updatedata();
+}
+function cargarTablasB(){
+    cargarTablaClientes(); 
+    cargarTablaCitas();
+    cargarTablaBarberosB();
+    cargarTablaProductos();
+    desyset();
+    updatedata();
+}
+function updatedata(llave){
+     $.ajax({
+                url: '../php/manejobarbero.php',
+                method: 'POST',
+                dataType: 'text', 
+                data: {
+                    llave: 'updateData'
+                }, success: function(respuesta){
+                }
+            });
 }
 function eliminarCita(id){
     var resp = confirm("Seguro que desea eliminar la cita "+id);
@@ -1309,6 +1749,7 @@ function realizarActualizacionCita(llave){
             }
         });
 }
+
 function actualizarCliente(id){
     var datos;
     var array;
@@ -1698,7 +2139,41 @@ function realizarActualizacionB(llave){
                         this.cargarTablaBarberos();
     }
 }
-
+function realizarActualizacionCitaC(llave){
+    var id_cita = $('#idCitaUp')
+    var barbero = $("#barberoUp");
+    var horario = $("#horarioUp");
+    var servicio = $("#servicioUp");
+    var hora = $("#fechaUp");
+    
+        $.ajax({
+            url: '../php/manejocliente.php',
+            method: 'POST',
+            dataType: 'text', 
+            data: {
+                llave: llave,
+                id_cita: id_cita.val(),
+                barbero: barbero.val(),
+                horario: horario.val(),
+                servicio: servicio.val(),
+                hora: hora.val()
+            }, success: function(respuesta){
+            if(respuesta == "Se actualizo"){
+                $("#sacarCitaModalUp").modal("toggle");
+                $("#modalSuccessUpCita").modal('show');
+            }
+            else{
+                $("#resultados").addClass("alert alert-danger");
+                $("#resultados").html(respuesta);
+                $("#resultados").delay(5000).fadeOut(function(){
+                    $(this).removeClass("alert alert-danger");
+                    $(this).html("");
+                    $(this).css("display", "");
+                });
+            }
+            }
+        });
+}
 function modalCambio(){
     $("#agregarCitaModal").modal("toggle");
     $('#agregarClienteModal').modal('show');
@@ -1739,6 +2214,42 @@ function sacarCita(llave){
         }
     });
 }  
+function eliminarCitaC(id){
+    var resp = confirm("Seguro que desea eliminar la cita "+id);
+    if(resp == true){
+         $.ajax({
+                url: '../php/manejocliente.php',
+                method: 'POST',
+                dataType: 'text', 
+                data: {
+                    llave: 'eliminarCita',
+                    id: id
+                }, success: function(respuesta){
+                    if(respuesta == "Cita eliminada exitosamente."){
+                        cargarTabla();
+                        $('#miResultadoC').addClass("alert alert-success");
+                        $('#miResultadoC').html(respuesta);
+                        $('#miResultadoC').delay(5000).fadeOut(function(){
+                            $(this).removeClass("alert alert-success");
+                            $(this).html("");
+                            $(this).css("display", "");
+                        });
+                    }
+                    else{
+                        $("#miResultadoC").addClass("alert alert-danger");
+                        $("#miResultadoC").html(respuesta);
+                        $("#miResultadoC").delay(5000).fadeOut(function(){
+                            $(this).removeClass("alert alert-danger");
+                            $(this).html("");
+                            $(this).css("display", "");
+                        });
+                    }
+                }
+            });
+    }else{
+        cargarTabla();
+    }
+}
 function sacarCitaAdmin(llave){
     var barbero = $("#barbero");
     var servicio = $("#servicio");

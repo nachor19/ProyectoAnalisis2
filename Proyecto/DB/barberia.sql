@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-08-2019 a las 21:27:09
+-- Tiempo de generación: 20-08-2019 a las 23:43:13
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.2
 
@@ -21,35 +21,82 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `barberia`
 --
-CREATE DATABASE IF NOT EXISTS `barberia` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `barberia`;
 
 DELIMITER $$
 --
 -- Procedimientos
 --
-DROP PROCEDURE IF EXISTS `SP_BARBEROS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ACTUALIZARADMIN` (IN `cedulaVal` INT, IN `nombreVal` VARCHAR(100), IN `apellido1` VARCHAR(100), IN `apellido2` VARCHAR(100), IN `telefonoVal` VARCHAR(100), IN `rolVal` INT)  NO SQL
+UPDATE USUARIO U SET U.NOMBRE = nombreVal, U.PRIMERAPELLIDO = apellido1, U.SEGUNDOAPELLIDO = apellido2, U.TELEFONO = telefonoVal, u.rol =rolVal WHERE u.CEDULA = cedulaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ACTUALIZARCITA` (IN `id_citaVal` INT, IN `id_barberoVal` INT, IN `id_horarioVal` INT, IN `id_servicioVal` INT, IN `horaVal` DATE)  NO SQL
+UPDATE CITA 
+SET ID_BARBERO = id_barberoVal, ID_HORARIO = id_horarioVal, ID_SERVICIO = id_servicioVal, FECHA = horaVal 
+WHERE ID_CITA = id_citaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ACTUALIZARCLIENTE` (IN `cedulaVal` INT, IN `nombre` VARCHAR(100), IN `primerApellido` VARCHAR(100), IN `segundoApellido` VARCHAR(100), IN `email` VARCHAR(100), IN `telefono` VARCHAR(100), IN `rolVal` INT)  NO SQL
+    DETERMINISTIC
+UPDATE USUARIO SET NOMBRE = nombre,
+ PRIMERAPELLIDO = primerApellido,
+ SEGUNDOAPELLIDO = segundoApellido,
+ TELEFONO = telefono,
+ EMAILC = email,
+ rol = rolVal 
+WHERE CEDULA = cedulaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ACTUALIZARPROD` (IN `id_prod` INT, IN `nombreVal` VARCHAR(100), IN `descr` VARCHAR(100), IN `precio` DECIMAL(13,2), IN `cant` INT, IN `img` TEXT)  NO SQL
+UPDATE PRODUCTO P SET P.NOMBRE = nombreVal, p.DESCRIPCION = descr, p.CANTIDAD = cant, p.IMAGEN = img WHERE P.ID_PRODUCTO = id_prod$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_ADMINISTRADORES` ()  NO SQL
+SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 2$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_BARBEROS` ()  NO SQL
 SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 3$$
 
-DROP PROCEDURE IF EXISTS `SP_CITAS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_BARBEROSB` (IN `id_barbero` INT)  NO SQL
+SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 3 AND CEDULA = id_barbero$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_CITAS` ()  NO SQL
 SELECT ID_CITA, B.NOMBRE, H.ID_HORARIO, U.CEDULA, concat_ws(' ', U.NOMBRE, U.PRIMERAPELLIDO) AS USUARIO, C.FECHA, DESCRIPCION, ESTADO, S.NOMBRESERVICIO, S.PRECIOSERVICIO 
 FROM cita C, usuario B, horario H, usuario U, servicio S
 WHERE C.ID_BARBERO = B.CEDULA AND C.ID_HORARIO = H.ID_HORARIO AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = U.CEDULA$$
 
-DROP PROCEDURE IF EXISTS `SP_PRODUCTOS`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DATOSACTUALIZAR` (IN `ID_CLIENTE` INT)  NO SQL
+SELECT NOMBRE, PRIMERAPELLIDO, SEGUNDOAPELLIDO, EMAILC, TELEFONO, NOMBRE_ROL, CEDULA FROM USUARIO U, ROLES R WHERE U.rol = R.ID_ROL AND CEDULA = ID_CLIENTE$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DATOSACTUALIZARADMIN` (IN `cedulaVal` INT)  NO SQL
+SELECT U.CEDULA, U.NOMBRE, U.PRIMERAPELLIDO, U.SEGUNDOAPELLIDO, U.TELEFONO, R.NOMBRE_ROL
+FROM USUARIO U, ROLES R
+WHERE U.rol = R.ID_ROL AND U.CEDULA = cedulaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DATOSACTUALIZARCITA` (IN `id_citaVal` INT)  NO SQL
+SELECT C.ID_CITA, B.NOMBRE, ID_HORARIO, S.NOMBRESERVICIO, C.FECHA, C.ESTADO
+FROM SERVICIO S, CITA C, USUARIO B
+WHERE C.ID_SERVICIO = S.ID_SERVICIO AND C.ID_BARBERO = B.CEDULA AND S.ID_SERVICIO = C.ID_SERVICIO AND C.ID_CITA = id_citaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_DATOSACTUALIZARPROD` (IN `id_productoVal` INT)  NO SQL
+SELECT p.ID_PRODUCTO, p.NOMBRE, p.DESCRIPCION, p.PRECIO, p.CANTIDAD, p.IMAGEN FROM producto P WHERE P.ID_PRODUCTO = id_productoVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_GETCITA` (IN `id_citaVal` INT)  NO SQL
+SELECT C.ID_CITA, B.NOMBRE, ID_HORARIO, S.NOMBRESERVICIO, C.FECHA
+FROM SERVICIO S, CITA C, USUARIO B
+WHERE C.ID_SERVICIO = S.ID_SERVICIO AND C.ID_BARBERO = B.CEDULA AND S.ID_SERVICIO = C.ID_SERVICIO AND C.ID_CITA = id_citaVal$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_PRODUCTOS` ()  NO SQL
 SELECT ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, CANTIDAD FROM producto$$
 
-DROP PROCEDURE IF EXISTS `SP_TABLACLIENTE`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT FECHA, b.NOMBRE, ID_HORARIO, NOMBRESERVICIO, PRECIO 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTE` (IN `ID_CLIENTE` INT)  SELECT c.ID_CITA, FECHA, b.NOMBRE, ID_HORARIO, NOMBRESERVICIO, PRECIO 
 FROM usuario B, CITA C, servicio s 
 WHERE C.ID_BARBERO = B.CEDULA AND C.ID_SERVICIO = S.ID_SERVICIO AND C.CEDULA = ID_CLIENTE$$
 
-DROP PROCEDURE IF EXISTS `SP_TABLACLIENTES`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_TABLACLIENTES` ()  NO SQL
 SELECT CEDULA, NOMBRE, concat_ws(' ', PRIMERAPELLIDO, SEGUNDOAPELLIDO) AS APELLIDOS, EMAILC, TELEFONO FROM USUARIO WHERE ROL = 1$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPDATEDATA` (IN `id_citaVal` INT)  NO SQL
+UPDATE CITA SET ESTADO = "REALIZADA" WHERE ID_CITA = id_citaVal$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_UPDATEDATA2` (IN `id_citaVal` INT)  NO SQL
+UPDATE CITA SET ESTADO = "PENDIENTE" WHERE ID_CITA = id_citaVal$$
 
 DELIMITER ;
 
@@ -59,7 +106,6 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `cita`
 --
 
-DROP TABLE IF EXISTS `cita`;
 CREATE TABLE `cita` (
   `ID_CITA` int(11) NOT NULL,
   `ID_BARBERO` int(11) DEFAULT NULL,
@@ -77,7 +123,18 @@ CREATE TABLE `cita` (
 --
 
 INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `DESCRIPCION`, `ESTADO`, `ID_SERVICIO`, `PRECIO`) VALUES
-(94, 110780256, '11:00:00', 132456789, '2019-08-16', NULL, NULL, 7, '12000');
+(107, 117250705, '14:00:00', 110780256, '2019-08-08', NULL, 'REALIZADA', 6, '12000'),
+(108, 117250705, '10:00:00', 132456789, '2019-08-28', NULL, 'PENDIENTE', 6, '6000'),
+(111, 117250705, '14:00:00', 203670467, '2019-08-28', 'hola', 'PENDIENTE', 6, '6000'),
+(112, 109234729, '14:00:00', 198032403, '2019-08-24', NULL, 'PENDIENTE', 6, '6000'),
+(114, 678462467, '10:00:00', 110780256, '2019-08-23', 'Sin comentarios', 'PENDIENTE', 7, '12000'),
+(117, 109234729, '11:00:00', 17282007, '0000-00-00', NULL, 'PENDIENTE', 6, '6000'),
+(119, 117250705, '16:00:00', 17282007, '2019-08-30', NULL, 'PENDIENTE', 6, '6000'),
+(120, 678462467, '16:00:00', 17282007, '2019-08-30', NULL, 'PENDIENTE', 6, '6000'),
+(122, 109234729, '11:00:00', 17282007, '2019-08-29', NULL, 'PENDIENTE', 6, '6000'),
+(123, 109234729, '09:00:00', 17282007, '2019-08-28', NULL, 'PENDIENTE', 5, '3000'),
+(124, 109234729, '09:00:00', 17282007, '2019-08-31', NULL, 'PENDIENTE', 5, '3000'),
+(126, 117250705, '09:00:00', 17282007, '0000-00-00', NULL, 'PENDIENTE', 5, '3000');
 
 -- --------------------------------------------------------
 
@@ -85,7 +142,6 @@ INSERT INTO `cita` (`ID_CITA`, `ID_BARBERO`, `ID_HORARIO`, `CEDULA`, `FECHA`, `D
 -- Estructura de tabla para la tabla `horario`
 --
 
-DROP TABLE IF EXISTS `horario`;
 CREATE TABLE `horario` (
   `ID_HORARIO` time NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -111,7 +167,6 @@ INSERT INTO `horario` (`ID_HORARIO`) VALUES
 -- Estructura de tabla para la tabla `orden`
 --
 
-DROP TABLE IF EXISTS `orden`;
 CREATE TABLE `orden` (
   `ORDEN_ID` int(11) NOT NULL,
   `CLIENTE_ID` int(11) NOT NULL,
@@ -127,7 +182,6 @@ CREATE TABLE `orden` (
 -- Estructura de tabla para la tabla `orden_producto`
 --
 
-DROP TABLE IF EXISTS `orden_producto`;
 CREATE TABLE `orden_producto` (
   `ID` int(11) NOT NULL,
   `ORDEN_ID` int(11) NOT NULL,
@@ -141,7 +195,6 @@ CREATE TABLE `orden_producto` (
 -- Estructura de tabla para la tabla `producto`
 --
 
-DROP TABLE IF EXISTS `producto`;
 CREATE TABLE `producto` (
   `ID_PRODUCTO` int(11) NOT NULL,
   `NOMBRE` varchar(40) NOT NULL,
@@ -159,10 +212,11 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMENTARIO`, `ESTADO`, `CANTIDAD`, `IMAGEN`) VALUES
 (1, 'Bálsamo', 'Bálsamo para barba y bigote', '13000.00', '', 'D', 7, '../img/productos/balsamo.png'),
-(2, 'Kit Charles', 'Prueba', '15000.00', '', 'D', 10, '../img/productos/kit-charles.png'),
+(2, 'Kit Charles', 'Kit Charles', '15000.00', '', 'D', 6, '../img/productos/kit-charles.png'),
 (3, 'Shaving Charles', 'Shaving Charles', '12000.00', '', 'D', 15, '../img/productos/shaving-charles.png'),
 (4, 'Shaving Soap', 'Shaving Soap', '9000.00', '', 'D', 9, '../img/productos/shaving-soap.png'),
-(5, 'Aceite Bay Rum Beard', 'Grande', '14000.00', '', 'D', 10, '../img/productos/suavecito-bay-rum-beard-oil_large.png');
+(5, 'Aceite Bay Rum Beard', 'Grande', '14000.00', '', 'D', 10, '../img/productos/suavecito-bay-rum-beard-oil_large.png'),
+(6, 'Prueba', 'Prueba2', '5000.00', '', 'D', 2, '../img/productos/balsamo.png');
 
 -- --------------------------------------------------------
 
@@ -170,7 +224,6 @@ INSERT INTO `producto` (`ID_PRODUCTO`, `NOMBRE`, `DESCRIPCION`, `PRECIO`, `COMEN
 -- Estructura de tabla para la tabla `roles`
 --
 
-DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `ID_ROL` int(11) NOT NULL,
   `NOMBRE_ROL` varchar(14) NOT NULL
@@ -181,9 +234,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`ID_ROL`, `NOMBRE_ROL`) VALUES
-(1, 'cliente'),
-(2, 'administrador'),
-(3, 'barbero');
+(1, 'CLIENTE'),
+(2, 'ADMINISTRADOR'),
+(3, 'BARBERO');
 
 -- --------------------------------------------------------
 
@@ -191,7 +244,6 @@ INSERT INTO `roles` (`ID_ROL`, `NOMBRE_ROL`) VALUES
 -- Estructura de tabla para la tabla `servicio`
 --
 
-DROP TABLE IF EXISTS `servicio`;
 CREATE TABLE `servicio` (
   `ID_SERVICIO` int(11) NOT NULL,
   `TIEMPO_REQUERIDO` time DEFAULT NULL,
@@ -215,7 +267,6 @@ INSERT INTO `servicio` (`ID_SERVICIO`, `TIEMPO_REQUERIDO`, `NOMBRESERVICIO`, `PR
 -- Estructura de tabla para la tabla `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `CEDULA` int(11) NOT NULL,
   `NOMBRE` varchar(100) NOT NULL,
@@ -232,21 +283,26 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`CEDULA`, `NOMBRE`, `PRIMERAPELLIDO`, `SEGUNDOAPELLIDO`, `EMAILC`, `TELEFONO`, `CONTRASENNA`, `rol`) VALUES
-(4362646, 'Prueba3', 'Prueba3', 'Prueba3', 'dklfjl@gmail.com', '98327474', '$2y$10$q2JMnI61C.9rW3j470mpne.UwPkDO9IJUI64.PblluZSkYIbIyWme', 1),
-(12341234, 'gabdsda', 'esajdsada', 'dasdasd', 'dsa@correo.com', '12341234', '$2y$10$92W.kr5n4TQTZF.r799fsuZx.HsVGcAUucNTv1X8UXlqypv8uRXUq', 1),
-(110780256, 'Dyver', 'Brenes', 'Mora', 'dyver@gmail.com', '86567825', '$2y$10$xdXdSro.UDpxDB/2hScIBO0GCY6WaNoyEbNKsXJFXeJ8di0Tx.qma', 3),
-(117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '87992514', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i', 1),
-(117250705, 'Keissy', 'Leitón', 'Hernández', 'keissyleiton08@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne', 1),
-(123412341, 'dsfdsfs', 'fadsfdsf', 'asdfasdf', 'rch@gmail.co', '23432141', '$2y$10$TBRGZN02AMXQhpcZAxzi3.7uObIpDJwZBJRXU5NQRc9VO9t.RIaLK', 1),
-(123456789, 'Sofia', 'Matamoros', 'Viquez', 'mvsofia@hotmail.com', '88326518', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6', 1),
-(132456789, 'Minor', 'Solano', 'Nuñez', 'minor@gmail.com', '83457846', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK', 1),
-(345236243, 'Alejandro', 'Gonzalez', 'Gonzalez', 'alegonpov@gmail.com', '85408223', '$2y$10$.V917K/ZfMrMbIA862wQM.SsuVR/rsjIK0zs4Cvp3ihBVpdkLkdPO', 2),
-(347889342, 'David', 'Jimenez', 'Martinez', 'david@gmail.com', '8739487', '$2y$10$rWfHYkvxxDO99DBndAqC9evuCZKVb35HXO6oLFYsILg1zoe/OKOvi', 1),
-(546456546, 'Andres', 'Campos', 'Prado', 'maes@gmail.com', '23423423', '$2y$10$PD3N4gm7XpRWYTsNzmTZZeiNyjPL5FcEbcbxxMPlbRU444McRbwTS', 3),
-(777777777, 'Maria', 'Mora', 'Li', 'maria@gmail.com', '89667456', '$2y$10$mra.wpnKamyjANEUG8ItkeaWtvqGR./z3CgNqFqC44nrYS.bNbVwy', 1),
-(888888888, 'Benito', 'Camelas', 'Mora', 'benito@gmail.com', '88888888', '$2y$10$XNqPa3hnynZaEA0ChWCEWeNE.WaeNJoNOInxVGdYFdnaXQVKiV3bi', 2),
-(999999999, 'Ricardo', 'Madrigal', 'Herrera', 'rch@gmail.com', '12341234', '$2y$10$XOepLspqo.V8GRbd9W6Oou0tN0cvp.za3CGsTL5bZJlD4HwPtj/iq', 1),
-(2147483647, 'Manfred', 'Martinez', 'Monge', 'manfred@gmail.com', '82143962', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6', 1);
+(17282007, 'Emma', 'Rose', 'Li', 'emma@gmail.com', '70826871', '$2y$10$OYGFkaWK1.I.r/r6xHZeGO84hbnKMemkp0wyEGIwCvdK1mZqr7vOS', 1),
+(109234729, 'Minor', 'Davis', 'Segura', 'minor@gmail.com', '98217309', '$2y$10$Szo787hvaXUAkiWQuqcT4O6T2Tx0GvQduEsGM3T3/ZOHGRrjlMoIy', 3),
+(110780256, 'David', 'Viquez', 'Marin', 'david@gmail.com', '60367856', '$2y$10$xdXdSro.UDpxDB/2hScIBO0GCY6WaNoyEbNKsXJFXeJ8di0Tx.qma', 1),
+(117090968, 'Ignacio', 'Ramirez', 'Matamoros', 'ignaciorm1319@gmail.com', '86045616', '$2y$10$pQcxESVZuvHKudbUm0iMZuJZLSGVCZ3RPInE3jletI5ziI8u.GS4i', 2),
+(117250705, 'Keissy', 'Leiton', 'Hernandez', 'keissy@gmail.com', '60830513', '$2y$10$u2150guKAx0w.0YJrN3vneKTa/McbeOeljT3gw2r/z6.PcDfGH6Ne', 3),
+(123456789, 'Mario', 'Marin', 'Castro', 'benito@gmail.com', '87992514', '$2y$10$Fq2oHVu7UioMvfGUN/I31uRZhsuUuckn6lSrOwTwcmw4M7AgisIs6', 2),
+(132456789, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$R6FfptqR6h/Qv768irwLbevLTyeoH9bfCXJj4waOAZ8ObWsAsFTCK', 1),
+(198032403, 'Jose', 'Varela', 'Monge', 'jose@gmail.com', '83920189', '$2y$10$TjYp6q3TUzE2NSK88BJwgOpCPw6HNT4X0vJdBSoMAdwkYNK8XI3o6', 1),
+(203670467, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$VIyGCZvijGqkKd2crda0I.8VgpgFDXUDgzM4xolNLqVND/87nmeJy', 1),
+(345236243, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$.V917K/ZfMrMbIA862wQM.SsuVR/rsjIK0zs4Cvp3ihBVpdkLkdPO', 1),
+(436475757, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$pWHAN8RS7MCDab4NM0J6OOQLsNcwoRdJkelz/VDS0MrR70KbVWl/K', 1),
+(546345634, 'Carlos', 'Sanchez', 'Guevara', 'carlos@gmail.com', '68729010', '$2y$10$i2svnAEeSEQeiCzcLGfkReiAnbFtmJpmPuuLeJne8ddeTe1w8kzw6', 2),
+(546456546, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$PD3N4gm7XpRWYTsNzmTZZeiNyjPL5FcEbcbxxMPlbRU444McRbwTS', 1),
+(678462467, 'Jerry', 'Salas', 'Mora', 'jerry@gmail.com', '60567945', '$2y$10$5r9NeuTPdITe10A3DSYaB.e7Vf27lRCfJN/uexkc6y7GXTx2Ma29G', 3),
+(702567025, 'Daniela', 'Monge', 'Cartin', 'daniela@gmail.com', '60260356', '$2y$10$SCb6IYsP.bJm9gisF/v0auzvXlPouRukfWtAlKhKiUCoarGX92PZa', 1),
+(826713892, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$cOOwgu9PpPg6vdh0bMrCf.Ekll4EXLwX.GUt0ikVeLmHB1VuTbejy', 1),
+(832749238, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$oCsdX.TUYTVRwyprfWJVW.Y30Q9lY8j5vmYMRgJqQx/vXxtgTeNnC', 1),
+(876983274, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$QWX0xs2F6a1jw2TYZtMJ.O1SOIiJJzyLPYdoiLZmRHMaDA0xkHcxW', 1),
+(888888888, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$XNqPa3hnynZaEA0ChWCEWeNE.WaeNJoNOInxVGdYFdnaXQVKiV3bi', 1),
+(2147483647, 'Mario', 'Marin', 'Castro', 'mario@gmail.com', '87992514', '$2y$10$b/cI/wNOd8CYLMG3UxmXy.NoaB/frsKbhhuXe9SHF..7vYHIc6wS6', 1);
 
 --
 -- Índices para tablas volcadas
@@ -306,8 +362,8 @@ ALTER TABLE `servicio`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`CEDULA`),
-  ADD UNIQUE KEY `EMAILC` (`EMAILC`),
-  ADD UNIQUE KEY `CEDULA` (`CEDULA`);
+  ADD UNIQUE KEY `CEDULA` (`CEDULA`),
+  ADD KEY `EMAILC` (`EMAILC`) USING BTREE;
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -317,7 +373,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `ID_CITA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT de la tabla `orden`
@@ -335,7 +391,7 @@ ALTER TABLE `orden_producto`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `ID_PRODUCTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID_PRODUCTO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -358,7 +414,6 @@ ALTER TABLE `servicio`
 --
 ALTER TABLE `cita`
   ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`CEDULA`) REFERENCES `usuario` (`CEDULA`),
-  ADD CONSTRAINT `cita_ibfk_3` FOREIGN KEY (`ID_HORARIO`) REFERENCES `horario` (`ID_HORARIO`),
   ADD CONSTRAINT `cita_ibfk_4` FOREIGN KEY (`ID_SERVICIO`) REFERENCES `servicio` (`ID_SERVICIO`),
   ADD CONSTRAINT `cita_ibfk_5` FOREIGN KEY (`ID_BARBERO`) REFERENCES `usuario` (`CEDULA`);
 
